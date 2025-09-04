@@ -68,10 +68,10 @@
   <button onclick="chooseUnit('healer')">クレリック召喚</button>
 </div>
 
-<!-- スクリプトを分割して読み込み -->
+<!-- スクリプト読み込み（順番に注意） -->
 <script src="units.js"></script>
 <script src="projectiles.js"></script>
 <script src="ui.js"></script>
-<script src="game.js"></script>
+<script src="game.js"></script> <!-- ★ 最後に読み込む -->
 </body>
 </html>
