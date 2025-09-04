@@ -51,15 +51,93 @@ function spawnEnemy(){
 function loop(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.strokeStyle="#555";
-  for(let i=1;i<5;i++){ ctx.beginPath(); ctx.moveTo(i*canvas.width/5,0); ctx.lineTo(i*canvas.width/5,canvas.height); ctx.stroke(); }
+  for(let i=1;i<5;i++){ 
+    ctx.beginPath(); 
+    ctx.moveTo(i*canvas.width/5,0); 
+    ctx.lineTo(i*canvas.width/5,canvas.height); 
+    ctx.stroke(); 
+  }
   ctx.fillStyle="white";
   ctx.fillText(`自陣HP:${playerBaseHP}`,10,15);
   ctx.fillText(`敵陣HP:${enemyBaseHP}`,280,15);
 
   for(const u of [...playerUnits,...enemyUnits]){ u.update(); u.draw(); }
 
-  // 攻撃ロジック（省略：v0.2.27のまま書く）
-  // ...
+  // === 自軍攻撃 ===
+  for(const p of playerUnits){
+    for(const e of enemyUnits){
+      if(inMeleeRange(p,e)){
+        p.target=e; e.target=p;
+        if(p.cooldown<=0){ 
+          e.hp-=p.atk; 
+          hitMarks.push(new HitMark(e.x,e.y)); 
+          swingMarks.push(new SwingMark(p.x,p.y,"player")); 
+          p.cooldown=30; 
+        }
+        if(e.cooldown<=0){ 
+          p.hp-=e.atk; 
+          hitMarks.push(new HitMark(p.x,p.y)); 
+          swingMarks.push(new SwingMark(e.x,e.y,"enemy")); 
+          e.cooldown=40; 
+        }
+      }else{
+        if(p.role==="archer" && inUnitRange(p,e) && p.cooldown<=0){
+          projectiles.push(new Projectile(p.x,p.y-12,e,p.atk,"white"));
+          p.cooldown=60;
+        }
+      }
+    }
+    if(p.role==="healer" && p.cooldown<=0){
+      for(const ally of playerUnits){
+        if(ally!==p && ally.hp>0 && ally.hp<unitStats[ally.type].hp && inUnitRange(p,ally)){
+          projectiles.push(new HealProjectile(p.x,p.y-12,ally,p.atk));
+          p.cooldown=90;
+          break;
+        }
+      }
+    }
+  }
+
+  // === 敵攻撃 ===
+  for(const e of enemyUnits){
+    if(e.target && e.target.hp>0){
+      // 戦闘中は移動・射撃なし
+    }else{
+      if(e.role==="shaman" && e.cooldown<=0 && playerUnits.length>0){
+        const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
+        if(inUnitRange(e,t)){ 
+          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"purple")); 
+          e.cooldown=80; 
+        }
+      }
+      if(e.role==="phantom" && e.cooldown<=0 && playerUnits.length>0){
+        const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
+        if(inUnitRange(e,t)){ 
+          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"yellow")); 
+          e.cooldown=50; 
+        }
+      }
+    }
+  }
+
+  for(const u of [...playerUnits,...enemyUnits]) if(u.cooldown>0) u.cooldown--;
+
+  for(const pr of projectiles){ pr.update(); pr.draw(); }
+  projectiles = projectiles.filter(pr=>pr.active);
+  for(const h of hitMarks){ h.update(); h.draw(); }
+  hitMarks = hitMarks.filter(h=>h.life>0);
+  for(const s of swingMarks){ s.update(); s.draw(); }
+  swingMarks = swingMarks.filter(s=>s.life>0);
+
+  // 到達処理
+  playerUnits = playerUnits.filter(u=>u.hp>0 && u.y>0);
+  enemyUnits  = enemyUnits.filter(u=>u.hp>0 && u.y<canvas.height);
+  for(const e of enemyUnits){ if(e.y>=canvas.height-30){ playerBaseHP-=e.atk; e.hp=0; } }
+  for(const p of playerUnits){ if(p.y<=30){ enemyBaseHP-=p.atk; p.hp=0; } }
+
+  // 勝敗
+  if(playerBaseHP<=0){ endScreen("GAME OVER","red"); return; }
+  if(enemyBaseHP<=0){ endScreen("VICTORY!","yellow"); return; }
 
   requestAnimationFrame(loop);
 }
@@ -70,16 +148,6 @@ function endScreen(text,color){
 }
 
 function chooseUnit(type){ pendingUnitType=type; }
-
-// === ここを追加 ===
-// HTMLから呼び出せるようにする
-window.startGame = startGame;
-window.applySettingsAndStart = applySettingsAndStart;
-window.showSettings = showSettings;
-window.backToMenu = backToMenu;
-window.showHelp = showHelp;
-window.backToMenuFromHelp = backToMenuFromHelp;
-window.chooseUnit = chooseUnit;
 
 // HTMLから呼び出せるようにする
 window.startGame = startGame;
