@@ -80,3 +80,12 @@ window.backToMenu = backToMenu;
 window.showHelp = showHelp;
 window.backToMenuFromHelp = backToMenuFromHelp;
 window.chooseUnit = chooseUnit;
+
+// HTMLから呼び出せるようにする
+window.startGame = startGame;
+window.applySettingsAndStart = applySettingsAndStart;
+window.showSettings = showSettings;
+window.backToMenu = backToMenu;
+window.showHelp = showHelp;
+window.backToMenuFromHelp = backToMenuFromHelp;
+window.chooseUnit = chooseUnit;
