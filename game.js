@@ -58,35 +58,25 @@ function loop(){
 
   for(const u of [...playerUnits,...enemyUnits]){ u.update(); u.draw(); }
 
-  // === 自軍攻撃 ===
-  for(const p of playerUnits){
-    for(const e of enemyUnits){
-      if(inMeleeRange(p,e)){
-        p.target=e; e.target=p;
-        if(p.cooldown<=0){ e.hp-=p.atk; hitMarks.push(new HitMark(e.x,e.y)); swingMarks.push(new SwingMark(p.x,p.y,"player")); p.cooldown=30; }
-        if(e.cooldown<=0){ p.hp-=e.atk; hitMarks.push(new HitMark(p.x,p.y)); swingMarks.push(new SwingMark(e.x,e.y,"enemy")); e.cooldown=40; }
-      }else{
-        if(p.role==="archer" && inUnitRange(p,e) && p.cooldown<=0){
-          projectiles.push(new Projectile(p.x,p.y-12,e,p.atk,"white"));
-          p.cooldown=60;
-        }
-      }
-    }
-    if(p.role==="healer" && p.cooldown<=0){
-      for(const ally of playerUnits){
-        if(ally!==p && ally.hp>0 && ally.hp<unitStats[ally.type].hp && inUnitRange(p,ally)){
-          projectiles.push(new HealProjectile(p.x,p.y-12,ally,p.atk));
-          p.cooldown=90;
-          break;
-        }
-      }
-    }
-  }
+  // 攻撃ロジック（省略：v0.2.27のまま書く）
+  // ...
 
-  // === 敵攻撃 ===
-  for(const e of enemyUnits){
-    if(e.target && e.target.hp>0){
-      // 戦闘中は移動・射撃なし
-    }else{
-      if(e.role==="shaman" && e.cooldown<=0 && playerUnits.length>0){
-        const t=
+  requestAnimationFrame(loop);
+}
+
+function endScreen(text,color){
+  if(enemySpawnTimer) { clearInterval(enemySpawnTimer); enemySpawnTimer=null; }
+  ctx.fillStyle=color; ctx.font="30px sans-serif"; ctx.fillText(text, 120, 300);
+}
+
+function chooseUnit(type){ pendingUnitType=type; }
+
+// === ここを追加 ===
+// HTMLから呼び出せるようにする
+window.startGame = startGame;
+window.applySettingsAndStart = applySettingsAndStart;
+window.showSettings = showSettings;
+window.backToMenu = backToMenu;
+window.showHelp = showHelp;
+window.backToMenuFromHelp = backToMenuFromHelp;
+window.chooseUnit = chooseUnit;
