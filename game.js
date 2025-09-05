@@ -183,6 +183,39 @@ function endScreen(text,color){
 
 function chooseUnit(type){ pendingUnitType=type; }
 
+function useSpecial(type){
+  if(type==="freeze" && mana.freeze >= maxMana.freeze){
+    // 5秒間、敵を停止
+    for(const e of enemyUnits){ e.speedBackup = e.speed; e.speed = 0; }
+    setTimeout(()=>{
+      for(const e of enemyUnits){ if(e.speedBackup !== undefined){ e.speed = e.speedBackup; delete e.speedBackup; } }
+    }, 5000);
+    mana.freeze = 0;
+  }
+
+  if(type==="meteor" && mana.meteor >= maxMana.meteor){
+    // 画面内の敵に大ダメージ
+    for(const e of enemyUnits){ e.hp -= 50; }
+    mana.meteor = 0;
+  }
+
+  if(type==="heal" && mana.heal >= maxMana.heal){
+    // 味方全体を回復
+    for(const p of playerUnits){ p.hp += 30; }
+    mana.heal = 0;
+
+  }
+
+  // UI更新
+  updateManaUI("freeze");
+  updateManaUI("meteor");
+  updateManaUI("heal");
+
+  mana[type] = 0;
+  updateManaUI(type);
+}
+
+
 // === window登録 ===
 window.startGame = startGame;
 window.applySettingsAndStart = applySettingsAndStart;
