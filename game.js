@@ -15,6 +15,7 @@ function inMeleeRange(a,b){
   if(laneDiff===1) return dy<=20;
   return false;
 }
+
 // 射程判定
 function inUnitRange(a,b){
   const dx = (a.lane-b.lane)*(canvas.width/5);
@@ -75,19 +76,19 @@ function loop(){
           e.hp -= dmg;
           hitMarks.push(new HitMark(e.x,e.y)); 
           swingMarks.push(new SwingMark(p.x,p.y,"player")); 
-          p.cooldown=30; 
+          p.cooldown=60;   // ★ 30 → 60
         }
         if(e.cooldown<=0){ 
           let dmg = (e.meleeAtk !== undefined) ? e.meleeAtk : e.atk;
           p.hp -= dmg;
           hitMarks.push(new HitMark(p.x,p.y)); 
           swingMarks.push(new SwingMark(e.x,e.y,"enemy")); 
-          e.cooldown=40; 
+          e.cooldown=80;   // ★ 40 → 80
         }
       }else{
         if(p.role==="archer" && inUnitRange(p,e) && p.cooldown<=0){
           projectiles.push(new Projectile(p.x,p.y-12,e,p.atk,"white"));
-          p.cooldown=60;
+          p.cooldown=120;  // ★ 60 → 120
         }
       }
     }
@@ -95,7 +96,7 @@ function loop(){
       for(const ally of playerUnits){
         if(ally!==p && ally.hp>0 && ally.hp<unitStats[ally.type].hp && inUnitRange(p,ally)){
           projectiles.push(new HealProjectile(p.x,p.y-12,ally,p.atk));
-          p.cooldown=90;
+          p.cooldown=180;  // ★ 90 → 180
           break;
         }
       }
@@ -111,21 +112,21 @@ function loop(){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
         if(inUnitRange(e,t)){ 
           projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"purple")); 
-          e.cooldown=80; 
+          e.cooldown=160;  // ★ 80 → 160
         }
       }
       if(e.role==="phantom" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
         if(inUnitRange(e,t)){ 
           projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"yellow")); 
-          e.cooldown=50; 
+          e.cooldown=100;  // ★ 50 → 100
         }
       }
       if(e.role==="golem" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
         if(inUnitRange(e,t)){ 
           projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"brown")); 
-          e.cooldown=100; 
+          e.cooldown=200;  // ★ 100 → 200
         }
       }
     }
