@@ -66,6 +66,20 @@ function spawnEnemy(){
   enemyUnits.push(new Unit(type,"enemy",lane,40));
 }
 
+function updateManaUI(type){
+  const bar = document.getElementById(type + "Bar");
+  const btn = document.getElementById(type + "Btn");
+  if(!bar || !btn) return;
+
+  bar.value = mana[type];
+
+  if(mana[type] >= maxMana[type]){
+    btn.disabled = false;
+  } else {
+    btn.disabled = true;
+  }
+}
+
 
 function loop(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
