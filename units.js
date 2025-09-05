@@ -53,11 +53,23 @@ class Unit {
     ctx.fillText(this.label,this.x,this.y);
   }
 
-  update(){
-    if(this.target){
-      if(this.target.hp<=0 || !inMeleeRange(this,this.target)) this.target=null;
-      else return; // 戦闘中は停止
-    }
-    this.y += (this.side==="player" ? -this.speed : this.speed);
+ update(){
+  // 近接戦中
+  if(this.target){
+    if(this.target.hp<=0 || !inMeleeRange(this,this.target)) this.target=null;
+    else return; // 戦闘中は停止
   }
+
+  // 遠隔ユニットは、射程内に敵がいれば移動しない
+  if(this.role==="archer" || this.role==="healer" || this.role==="shaman" || this.role==="phantom" || this.role==="golem"){
+    let enemyList = (this.side==="player") ? enemyUnits : playerUnits;
+    for(const e of enemyList){
+      if(inUnitRange(this,e)){ 
+        return; // 敵が射程内にいる → 停止して射撃
+      }
+    }
+  }
+
+  // 通常移動
+  this.y += (this.side==="player" ? -this.speed : this.speed);
 }
