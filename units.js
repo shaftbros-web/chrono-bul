@@ -1,15 +1,15 @@
 // =====================
 // ユニットの基本ステータス
-// =====================
+// ====================
 let unitStats = {
-  swordsman:{hp:120, atk:10, speed:0.25, range:25}, // ナイト（近接のみ）
-  archer:{hp:80, atk:8, meleeAtk:2, speed:0.25, range:140}, // アーチャー（射程+20）
-  healer:{hp:100, atk:10, meleeAtk:2, speed:0.25, range:100}, // クレリック（回復・射程+20）
-  goblin:{hp:60, atk:5, speed:0.20, range:25}, // ゴブリン
-  orc:{hp:200, atk:15, speed:0.20, range:25}, // オーク
-  shaman:{hp:120, atk:12, meleeAtk:5, speed:0.25, range:140}, // シャーマン（射程+20）
-  phantom:{hp:80, atk:10, meleeAtk:5, speed:0.50, range:120}, // ファントム（射程+20）
-  golem:{hp:400, atk:20, meleeAtk:20, speed:0.10, range:100} // ゴーレム（岩投げ＋殴り・射程+20）
+  swordsman:{hp:120, atk:10, speed:0.125, range:25}, // ナイト
+  archer:{hp:80, atk:8, meleeAtk:2, speed:0.125, range:140}, // アーチャー
+  healer:{hp:100, atk:10, meleeAtk:2, speed:0.125, range:100}, // クレリック
+  goblin:{hp:60, atk:5, speed:0.10, range:25}, // ゴブリン
+  orc:{hp:200, atk:15, speed:0.10, range:25}, // オーク
+  shaman:{hp:120, atk:12, meleeAtk:5, speed:0.125, range:140}, // シャーマン
+  phantom:{hp:80, atk:10, meleeAtk:5, speed:0.25, range:120}, // ファントム
+  golem:{hp:400, atk:20, meleeAtk:20, speed:0.05, range:100} // ゴーレム
 };
 
 // =====================
