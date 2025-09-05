@@ -75,4 +75,5 @@ class Unit {
 
   // 通常移動
   this.y += (this.side==="player" ? -this.speed : this.speed);
+  }
 }
