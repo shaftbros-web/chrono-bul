@@ -7,16 +7,19 @@ const unitConfig = {
   orc:{name:"オーク", props:{hp:[100,500], atk:[10,50], speed:[0.05,0.5,0.05], range:[10,100]}},
   shaman:{name:"シャーマン", props:{hp:[50,250], atk:[5,30], speed:[0.1,0.5,0.05], range:[50,150]}},
   phantom:{name:"ファントム", props:{hp:[30,150], atk:[5,25], speed:[0.2,1,0.05], range:[30,120]}},
-  golem:{name:"ゴーレム", props:{hp:[200,1000], atk:[10,50], speed:[0.05,0.3,0.05], range:[10,100]}}
+  golem:{name:"ゴーレム", props:{hp:[200,1000], atk:[10,50], speed:[0.05,0.3,0.05], range:[10,100]}},
+
+  // 🆕 ボス
+  giantGolem:{name:"巨大ゴーレム", props:{hp:[800,2000], atk:[20,80], speed:[0.02,0.1,0.01], range:[50,200]}},
+  dragon:{name:"邪竜", props:{hp:[600,1500], atk:[30,100], speed:[0.05,0.2,0.01], range:[80,250]}}
 };
 
-// 単体モードで出すキャラ（なければnull）
+// 単体モードの指定キャラ
 let singleSpawnType = null;
 
 const unitSlidersDiv = document.getElementById("unitSliders");
 if (unitSlidersDiv && typeof unitStats !== "undefined"){
   for (let key in unitConfig){
-    // 名前部分をクリックできるようにする
     let html = `<div class="unit-settings"><h3 style="cursor:pointer;" onclick="startSingleMode('${key}')">${unitConfig[key].name}</h3>`;
     for (let prop in unitConfig[key].props){
       const [min,max,step=1] = unitConfig[key].props[prop];
