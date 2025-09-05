@@ -68,6 +68,30 @@
   <button onclick="chooseUnit('healer')">クレリック召喚</button>
 </div>
 
+<div id="specialUI" style="display:none; margin-top:10px;">
+  <div>
+    ❄ フリーズ
+    <div id="freezeBar" style="width:200px; height:20px; background:#444; margin:5px auto; position:relative;">
+      <div id="freezeFill" style="height:100%; width:0%; background:#0af;"></div>
+    </div>
+    <button id="freezeBtn" onclick="useSpecial('freeze')" disabled>発動</button>
+  </div>
+  <div>
+    ☄ メテオ
+    <div id="meteorBar" style="width:200px; height:20px; background:#444; margin:5px auto; position:relative;">
+      <div id="meteorFill" style="height:100%; width:0%; background:#f33;"></div>
+    </div>
+    <button id="meteorBtn" onclick="useSpecial('meteor')" disabled>発動</button>
+  </div>
+  <div>
+    ✚ ヒーリング
+    <div id="healBar" style="width:200px; height:20px; background:#444; margin:5px auto; position:relative;">
+      <div id="healFill" style="height:100%; width:0%; background:#3f3;"></div>
+    </div>
+    <button id="healBtn" onclick="useSpecial('heal')" disabled>発動</button>
+  </div>
+</div>
+  
 <!-- スクリプト読み込み（順番に注意） -->
 <script src="units.js" defer></script>
 <script src="projectiles.js" defer></script>
