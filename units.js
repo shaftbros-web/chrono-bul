@@ -63,11 +63,14 @@ class Unit {
   // 遠隔ユニットは、射程内に敵がいれば移動しない
   if(this.role==="archer" || this.role==="healer" || this.role==="shaman" || this.role==="phantom" || this.role==="golem"){
     let enemyList = (this.side==="player") ? enemyUnits : playerUnits;
+    let inRange = false;
     for(const e of enemyList){
       if(inUnitRange(this,e)){ 
-        return; // 敵が射程内にいる → 停止して射撃
+        inRange = true;
+        break;
       }
     }
+    if(inRange) return; // 敵が射程内にいたら停止して射撃
   }
 
   // 通常移動
