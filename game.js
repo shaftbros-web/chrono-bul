@@ -35,6 +35,9 @@ function startGame(){
   canvas.style.display="block";
   document.getElementById("ui").style.display="block";
 
+    // ✅ ここを追加
+  document.getElementById("specialUI").style.display = "block";
+
   playerBaseHP=100; enemyBaseHP=100;
   playerUnits=[]; enemyUnits=[]; projectiles=[]; hitMarks=[]; swingMarks=[];
   if(enemySpawnTimer) clearInterval(enemySpawnTimer);
@@ -193,7 +196,11 @@ updateManaUI("heal");
 function endScreen(text,color){
   if(enemySpawnTimer) { clearInterval(enemySpawnTimer); enemySpawnTimer=null; }
   ctx.fillStyle=color; ctx.font="30px sans-serif"; ctx.fillText(text, 120, 300);
+
+  // ✅ ゲーム終了時は非表示
+  document.getElementById("specialUI").style.display = "none";
 }
+
 
 function chooseUnit(type){ pendingUnitType=type; }
 
