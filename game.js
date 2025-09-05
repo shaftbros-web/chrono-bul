@@ -1,9 +1,13 @@
+// =====================
+// ゲーム進行制御
+// =====================
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 let playerBaseHP, enemyBaseHP, playerUnits, enemyUnits, projectiles, hitMarks, swingMarks;
 let pendingUnitType = null;
 let enemySpawnTimer = null;
 
+// 近接判定
 function inMeleeRange(a,b){
   const laneDiff = Math.abs(a.lane-b.lane);
   const dy = Math.abs(a.y-b.y);
@@ -11,6 +15,7 @@ function inMeleeRange(a,b){
   if(laneDiff===1) return dy<=20;
   return false;
 }
+// 射程判定
 function inUnitRange(a,b){
   const dx = (a.lane-b.lane)*(canvas.width/5);
   const dy = (a.y-b.y);
@@ -52,10 +57,7 @@ function loop(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.strokeStyle="#555";
   for(let i=1;i<5;i++){ 
-    ctx.beginPath(); 
-    ctx.moveTo(i*canvas.width/5,0); 
-    ctx.lineTo(i*canvas.width/5,canvas.height); 
-    ctx.stroke(); 
+    ctx.beginPath(); ctx.moveTo(i*canvas.width/5,0); ctx.lineTo(i*canvas.width/5,canvas.height); ctx.stroke(); 
   }
   ctx.fillStyle="white";
   ctx.fillText(`自陣HP:${playerBaseHP}`,10,15);
@@ -69,13 +71,15 @@ function loop(){
       if(inMeleeRange(p,e)){
         p.target=e; e.target=p;
         if(p.cooldown<=0){ 
-          e.hp-=p.atk; 
+          let dmg = (p.meleeAtk !== undefined) ? p.meleeAtk : p.atk;
+          e.hp -= dmg;
           hitMarks.push(new HitMark(e.x,e.y)); 
           swingMarks.push(new SwingMark(p.x,p.y,"player")); 
           p.cooldown=30; 
         }
         if(e.cooldown<=0){ 
-          p.hp-=e.atk; 
+          let dmg = (e.meleeAtk !== undefined) ? e.meleeAtk : e.atk;
+          p.hp -= dmg;
           hitMarks.push(new HitMark(p.x,p.y)); 
           swingMarks.push(new SwingMark(e.x,e.y,"enemy")); 
           e.cooldown=40; 
@@ -117,6 +121,13 @@ function loop(){
           e.cooldown=50; 
         }
       }
+      if(e.role==="golem" && e.cooldown<=0 && playerUnits.length>0){
+        const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
+        if(inUnitRange(e,t)){ 
+          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"brown")); 
+          e.cooldown=100; 
+        }
+      }
     }
   }
 
@@ -135,7 +146,6 @@ function loop(){
   for(const e of enemyUnits){ if(e.y>=canvas.height-30){ playerBaseHP-=e.atk; e.hp=0; } }
   for(const p of playerUnits){ if(p.y<=30){ enemyBaseHP-=p.atk; p.hp=0; } }
 
-  // 勝敗
   if(playerBaseHP<=0){ endScreen("GAME OVER","red"); return; }
   if(enemyBaseHP<=0){ endScreen("VICTORY!","yellow"); return; }
 
@@ -149,7 +159,7 @@ function endScreen(text,color){
 
 function chooseUnit(type){ pendingUnitType=type; }
 
-// HTMLから呼び出せるようにする
+// === window登録 ===
 window.startGame = startGame;
 window.applySettingsAndStart = applySettingsAndStart;
 window.showSettings = showSettings;
