@@ -48,11 +48,20 @@ function startGame(){
 }
 
 function spawnEnemy(){
+  if(singleSpawnType){ 
+    // 単体モード：センターレーンに1体だけ出現
+    enemyUnits.push(new Unit(singleSpawnType,"enemy",2,40));
+    clearInterval(enemySpawnTimer); // 1体だけにするので以降停止
+    return;
+  }
+
+  // 通常モード
   const types=["goblin","orc","golem","shaman","phantom"];
   const type=types[Math.floor(Math.random()*types.length)];
   const lane=Math.floor(Math.random()*5);
   enemyUnits.push(new Unit(type,"enemy",lane,40));
 }
+
 
 function loop(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
