@@ -12,8 +12,8 @@ let unitStats = {
   golem:{hp:400, atk:20, meleeAtk:20, speed:0.1, range:100}, // ゴーレム
 
   // 🆕 ボス追加
-  giantGolem:{hp:1500, atk:40, meleeAtk:40, speed:0.06, range:140}, // 巨大ゴーレム
-  dragon:{hp:2500, atk:50, meleeAtk:80, speed:0.06, range:250}       // 邪竜
+  giantGolem:{hp:1500, atk:40, meleeAtk:40, speed:0.1, range:250}, // 巨大ゴーレム
+  dragon:{hp:2500, atk:50, meleeAtk:80, speed:0.1, range:250}       // 邪竜
 };
 
 // =====================
