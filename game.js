@@ -23,6 +23,10 @@ function inUnitRange(a,b){
   return Math.hypot(dx,dy) <= a.range;
 }
 
+// マナ変数の定義
+let mana = { freeze:0, meteor:0, heal:0 };
+const maxMana = { freeze:100, meteor:150, heal:120 };
+
 function startGame(){
   document.getElementById("menu").style.display="none";
   document.getElementById("settings").style.display="none";
@@ -156,6 +160,16 @@ function loop(){
   for(const e of enemyUnits){ if(e.y>=canvas.height-30){ playerBaseHP-=e.atk; e.hp=0; } }
   for(const p of playerUnits){ if(p.y<=30){ enemyBaseHP-=p.atk; p.hp=0; } }
 
+// === マナ自動回復 ===
+mana.freeze = Math.min(maxMana.freeze, mana.freeze + 0.167);  // 10秒でMAX
+mana.meteor = Math.min(maxMana.meteor, mana.meteor + 0.0625); // 40秒でMAX
+mana.heal   = Math.min(maxMana.heal,   mana.heal   + 0.1);    // 20秒でMAX
+
+updateManaUI("freeze");
+updateManaUI("meteor");
+updateManaUI("heal");
+
+  
   if(playerBaseHP<=0){ endScreen("GAME OVER","red"); return; }
   if(enemyBaseHP<=0){ endScreen("VICTORY!","yellow"); return; }
 
