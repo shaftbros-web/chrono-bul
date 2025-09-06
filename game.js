@@ -3,6 +3,11 @@
 // =====================
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+document.querySelectorAll('.unit-btn').forEach(btn => {
+  btn.addEventListener('mousedown', () => btn.classList.add('pressed'));
+  btn.addEventListener('mouseup', () => btn.classList.remove('pressed'));
+  btn.addEventListener('mouseleave', () => btn.classList.remove('pressed'));
+});
 let playerBaseHP, enemyBaseHP, playerUnits, enemyUnits, projectiles, hitMarks, swingMarks, specialEffects;
 let pendingUnitType = null;
 let pendingSpecial = null;
