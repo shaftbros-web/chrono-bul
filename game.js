@@ -27,6 +27,8 @@ function inUnitRange(a,b){
 // マナ変数の定義
 let mana = { freeze:0, meteor:0, heal:0 };
 const maxMana = { freeze:100, meteor:150, heal:120 };
+let playerGold = 0;
+const unitCosts = { swordsman:100, archer:120, healer:150 };
 
 function startGame(){
   document.getElementById("menu").style.display="none";
@@ -35,6 +37,10 @@ function startGame(){
   document.getElementById("title").style.display="none";
   canvas.style.display="block";
   document.getElementById("ui").style.display="block";
+
+  document.getElementById("goldUI").style.display="block";
+  playerGold = 300;
+  updateGoldUI();
 
     // ✅ ここを追加
   document.getElementById("specialUI").style.display = "block";
@@ -56,7 +62,12 @@ function startGame(){
     }
     if(!pendingUnitType) return;
     const lane = Math.floor(x/(canvas.width/5));
-    playerUnits.push(new Unit(pendingUnitType,"player",lane,canvas.height-40));
+    const cost = unitCosts[pendingUnitType] || 0;
+    if(playerGold >= cost){
+      playerUnits.push(new Unit(pendingUnitType,"player",lane,canvas.height-40));
+      playerGold -= cost;
+      updateGoldUI();
+    }
     pendingUnitType = null;
   };
 
@@ -95,7 +106,21 @@ function updateManaUI(type){
 }
 
 
+function updateGoldUI(){
+  const goldEl = document.getElementById("goldAmount");
+  if(goldEl) goldEl.textContent = Math.floor(playerGold);
+  const buttons = document.querySelectorAll("#ui button");
+  buttons.forEach(btn => {
+    const unit = btn.dataset.unit;
+    if(!unit) return;
+    const cost = unitCosts[unit] ?? Infinity;
+    btn.disabled = cost > playerGold;
+  });
+}
+
+
 function loop(){
+  updateGoldUI();
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.strokeStyle="#555";
   for(let i=1;i<5;i++){ 
@@ -212,6 +237,7 @@ function endScreen(text,color){
 
   // ✅ ゲーム終了時は非表示
   document.getElementById("specialUI").style.display = "none";
+  document.getElementById("goldUI").style.display = "none";
 }
 
 

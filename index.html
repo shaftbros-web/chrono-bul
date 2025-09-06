@@ -70,10 +70,14 @@
 
 <canvas id="gameCanvas" width="400" height="600"></canvas>
 
+<div id="goldUI" style="display:none; margin-top:10px;">
+  ゴールド: <span id="goldAmount">0</span>
+</div>
+
 <div id="ui">
-  <button onclick="chooseUnit('swordsman')">ナイト召喚</button>
-  <button onclick="chooseUnit('archer')">アーチャー召喚</button>
-  <button onclick="chooseUnit('healer')">クレリック召喚</button>
+  <button onclick="chooseUnit('swordsman')" data-unit="swordsman">ナイト召喚</button>
+  <button onclick="chooseUnit('archer')" data-unit="archer">アーチャー召喚</button>
+  <button onclick="chooseUnit('healer')" data-unit="healer">クレリック召喚</button>
 </div>
 
 <!-- スペシャル攻撃 UI -->
