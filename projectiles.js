@@ -31,6 +31,8 @@ class SwingMark{ constructor(x,y,side){ this.x=x; this.y=y; this.life=12; this.s
          ctx.beginPath(); ctx.arc(this.x,this.y,12,0,Math.PI/3); ctx.stroke(); ctx.restore(); } }
 
 // 特殊攻撃の範囲エフェクト
+const SPECIAL_CIRCLE_LINE_WIDTH = 10;
+
 class SpecialCircle{
   constructor(x,y,color){
     this.x=x; this.y=y; this.color=color;
@@ -47,7 +49,7 @@ class SpecialCircle{
   draw(){
     ctx.save();
     ctx.strokeStyle=this.color;
-    ctx.lineWidth = 10;
+    ctx.lineWidth = SPECIAL_CIRCLE_LINE_WIDTH;
     ctx.beginPath();
     ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
     ctx.stroke();

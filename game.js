@@ -87,8 +87,10 @@ function updateManaUI(type){
 
   if(mana[type] >= maxMana[type]){
     btn.disabled = false;
+    bar.classList.add("mana-full");
   } else {
     btn.disabled = true;
+    bar.classList.remove("mana-full");
   }
 }
 
