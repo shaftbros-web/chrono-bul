@@ -1,5 +1,5 @@
 class Projectile{
-  constructor(x,y,target,atk,opts="white"){ this.x=x; this.y=y; this.target=target; this.atk=atk; this.speed=3; this.active=true; if(typeof opts==="string"){ this.color=opts; this.shape="circle"; } else { this.color=opts.color||"white"; this.shape=opts.shape||"circle"; } }
+  constructor(x,y,target,atk,{color="white",shape="circle"}={}){ this.x=x; this.y=y; this.target=target; this.atk=atk; this.speed=3; this.active=true; this.color=color; this.shape=shape; }
   update(){
     if(!this.target || this.target.hp<=0){ this.active=false; return; }
     const dx=this.target.x-this.x, dy=this.target.y-this.y;

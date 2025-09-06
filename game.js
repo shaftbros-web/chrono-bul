@@ -195,11 +195,11 @@ function loop(){
         }
       }else{
         if(p.role==="archer" && inUnitRange(p,e) && p.cooldown<=0){
-          projectiles.push(new Projectile(p.x,p.y-12,e,p.atk,"white"));
+          projectiles.push(new Projectile(p.x,p.y-12,e,p.atk,{color:"white"}));
           p.cooldown=120;  // ★ 60 → 120
         }
         if(p.role==="dragon" && inUnitRange(p,e) && p.cooldown<=0){
-          projectiles.push(new Projectile(p.x,p.y-12,e,p.atk,"orange"));
+          projectiles.push(new Projectile(p.x,p.y-12,e,p.atk,{color:"orange"}));
           p.cooldown=150;
         }
       }
@@ -222,15 +222,15 @@ function loop(){
     }else{
       if(e.role==="shaman" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
-        if(inUnitRange(e,t)){ 
-          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"purple")); 
+        if(inUnitRange(e,t)){
+          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,{color:"purple"}));
           e.cooldown=160;  // ★ 80 → 160
         }
       }
       if(e.role==="phantom" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
-        if(inUnitRange(e,t)){ 
-          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"yellow")); 
+        if(inUnitRange(e,t)){
+          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,{color:"yellow"}));
           e.cooldown=100;  // ★ 50 → 100
         }
       }
@@ -244,7 +244,7 @@ function loop(){
       if(e.role==="dragon" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
         if(inUnitRange(e,t)){
-          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"orange"));
+          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,{color:"orange"}));
           e.cooldown=150;
         }
       }
