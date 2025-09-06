@@ -194,10 +194,10 @@ function loop(){
           e.cooldown=80;   // ★ 40 → 80
         }
       }else{
-        if(p.role==="archer" && inUnitRange(p,e) && p.cooldown<=0){
-          projectiles.push(new Projectile(p.x,p.y-12,e,p.atk,"white"));
-          p.cooldown=120;  // ★ 60 → 120
-        }
+          if(p.role==="archer" && inUnitRange(p,e) && p.cooldown<=0){
+            projectiles.push(new Projectile(p.x,p.y-12,e,p.atk,{shape:"arrow", color:"white", size:8}));
+            p.cooldown=120;  // ★ 60 → 120
+          }
         if(p.role==="dragon" && inUnitRange(p,e) && p.cooldown<=0){
           projectiles.push(new Projectile(p.x,p.y-12,e,p.atk,"orange"));
           p.cooldown=150;
