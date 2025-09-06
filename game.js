@@ -131,6 +131,10 @@ function loop(){
           projectiles.push(new Projectile(p.x,p.y-12,e,p.atk,"white"));
           p.cooldown=120;  // ★ 60 → 120
         }
+        if(p.role==="dragon" && inUnitRange(p,e) && p.cooldown<=0){
+          projectiles.push(new Projectile(p.x,p.y-12,e,p.atk,"orange"));
+          p.cooldown=150;
+        }
       }
     }
     if(p.role==="healer" && p.cooldown<=0){
@@ -165,9 +169,16 @@ function loop(){
       }
       if(e.role==="golem" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
-        if(inUnitRange(e,t)){ 
-          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"brown")); 
+        if(inUnitRange(e,t)){
+          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"brown"));
           e.cooldown=200;  // ★ 100 → 200
+        }
+      }
+      if(e.role==="dragon" && e.cooldown<=0 && playerUnits.length>0){
+        const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
+        if(inUnitRange(e,t)){
+          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"orange"));
+          e.cooldown=150;
         }
       }
     }
