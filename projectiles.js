@@ -1,4 +1,5 @@
 class Projectile{
+
   constructor(x,y,target,atk,opts="white"){
     this.x=x; this.y=y; this.target=target; this.atk=atk;
     this.speed=3; this.active=true;
@@ -6,7 +7,9 @@ class Projectile{
       this.color=opts; this.shape="circle"; this.size=4;
     }else{
       const o=opts||{};
-      this.color=o.color||"white"; this.shape=o.shape||"circle"; this.size=o.size||4;
+      this.color=o.color||"white"; 
+      this.shape=o.shape||"circle"; 
+      this.size=o.size||4;
     }
     this.angle=0;
   }
@@ -18,6 +21,7 @@ class Projectile{
     if(d<5){ this.target.hp-=this.atk; hitMarks.push(new HitMark(this.target.x,this.target.y)); this.active=false; }
     else { this.x += (dx/d)*this.speed*gameSpeed; this.y += (dy/d)*this.speed*gameSpeed; }
   }
+
   draw(){
     ctx.fillStyle=this.color;
     if(this.shape==="arrow"){
