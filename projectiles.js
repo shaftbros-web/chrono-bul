@@ -39,7 +39,7 @@ class Projectile{
   }
 }
 class HealProjectile{
-  constructor(x,y,target,amount){ this.x=x; this.y=y; this.target=target; this.amount=amount; this.speed=3; this.active=true; }
+  constructor(x,y,target,amount,size=4){ this.x=x; this.y=y; this.target=target; this.amount=amount; this.size=size; this.speed=3; this.active=true; }
   update(){
     if(!this.target || this.target.hp<=0){ this.active=false; return; }
     const dx=this.target.x-this.x, dy=this.target.y-this.y;
@@ -47,7 +47,19 @@ class HealProjectile{
     if(d<5){ this.target.hp += this.amount; hitMarks.push(new HealMark(this.target.x,this.target.y)); this.active=false; }
     else { this.x += (dx/d)*this.speed*gameSpeed; this.y += (dy/d)*this.speed*gameSpeed; }
   }
-  draw(){ ctx.fillStyle="lime"; ctx.beginPath(); ctx.arc(this.x,this.y,4,0,Math.PI*2); ctx.fill(); }
+  draw(){
+    ctx.save();
+    const g = ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size);
+    g.addColorStop(0,"rgba(0,255,0,1)");
+    g.addColorStop(1,"rgba(0,255,0,0)");
+    ctx.fillStyle = g;
+    ctx.shadowBlur = this.size*2;
+    ctx.shadowColor = "lime";
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
 }
 class HitMark{ constructor(x,y){ this.x=x; this.y=y; this.life=15; } update(){ this.life-=gameSpeed; }
   draw(){ ctx.lineWidth=3; ctx.strokeStyle="red"; ctx.beginPath(); ctx.moveTo(this.x-8,this.y-8); ctx.lineTo(this.x+8,this.y+8);
