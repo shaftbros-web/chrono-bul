@@ -29,3 +29,10 @@ class SwingMark{ constructor(x,y,side){ this.x=x; this.y=y; this.life=12; this.s
   draw(){ ctx.save(); ctx.lineWidth=3; ctx.strokeStyle=(this.side==="player")?"#88f":"#f88";
          ctx.beginPath(); ctx.arc(this.x,this.y,16,-Math.PI/3,0); ctx.stroke();
          ctx.beginPath(); ctx.arc(this.x,this.y,12,0,Math.PI/3); ctx.stroke(); ctx.restore(); } }
+
+// 特殊攻撃の範囲エフェクト
+class SpecialCircle{
+  constructor(x,y,color){ this.x=x; this.y=y; this.color=color; this.radius=0; this.active=true; }
+  update(){ this.radius += 8; if(this.radius > 140) this.active=false; }
+  draw(){ ctx.strokeStyle=this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.radius,0,Math.PI*2); ctx.stroke(); }
+}
