@@ -229,8 +229,8 @@ function loop(){
       }
       if(e.role==="phantom" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
-        if(inUnitRange(e,t)){ 
-          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"yellow")); 
+        if(inUnitRange(e,t)){
+          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"white"));
           e.cooldown=100;  // ★ 50 → 100
         }
       }
