@@ -14,6 +14,14 @@
   #ui { margin-top:10px; display:none; }
   #ui button { margin:5px; padding:8px 16px; font-size:14px; }
   #help, #settings { display:none; text-align:left; max-width:700px; margin:20px auto; padding:12px; background:#111; border:1px solid #555; }
+  @keyframes manaBlink {
+    0%, 100% { filter: drop-shadow(0 0 2px gold); opacity:1; }
+    50% { filter: drop-shadow(0 0 10px gold); opacity:0.6; }
+  }
+  progress.mana-full {
+    animation: manaBlink 1s linear infinite;
+    filter: drop-shadow(0 0 2px gold);
+  }
 </style>
 </head>
 <body>
