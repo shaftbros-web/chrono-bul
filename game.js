@@ -8,6 +8,14 @@ let pendingUnitType = null;
 let pendingSpecial = null;
 let enemySpawnTimer = null;
 
+// ユニットボタンの押下エフェクト
+document.querySelectorAll('.unit-btn').forEach(btn => {
+  btn.addEventListener('mousedown', () => btn.classList.add('pressed'));
+  ['mouseup', 'mouseleave'].forEach(ev =>
+    btn.addEventListener(ev, () => btn.classList.remove('pressed'))
+  );
+});
+
 // 近接判定
 function inMeleeRange(a,b){
   const laneDiff = Math.abs(a.lane-b.lane);

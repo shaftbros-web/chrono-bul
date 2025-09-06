@@ -13,6 +13,22 @@
   input[type=range] { width:230px; }
   #ui { margin-top:10px; display:none; }
   #ui button { margin:5px; padding:8px 16px; font-size:14px; }
+  .unit-btn {
+    background: linear-gradient(#555, #333);
+    border: 2px solid #777;
+    border-radius: 8px;
+    color: #eee;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s, box-shadow 0.1s;
+  }
+  .unit-btn:hover {
+    background: linear-gradient(#666, #444);
+  }
+  .unit-btn:active,
+  .unit-btn.pressed {
+    transform: translateY(2px);
+    box-shadow: inset 0 0 5px #000;
+  }
   #help, #settings { display:none; text-align:left; max-width:700px; margin:20px auto; padding:12px; background:#111; border:1px solid #555; }
   @keyframes manaBlink {
     0%, 100% { filter: drop-shadow(0 0 2px gold); opacity:1; }
@@ -72,9 +88,9 @@
 
 <div id="ui">
   <div id="goldDisplay">Gold: 500</div>
-  <button onclick="chooseUnit('swordsman')">ナイト召喚</button>
-  <button onclick="chooseUnit('archer')">アーチャー召喚</button>
-  <button onclick="chooseUnit('healer')">クレリック召喚</button>
+  <button class="unit-btn" onclick="chooseUnit('swordsman')">ナイト召喚</button>
+  <button class="unit-btn" onclick="chooseUnit('archer')">アーチャー召喚</button>
+  <button class="unit-btn" onclick="chooseUnit('healer')">クレリック召喚</button>
 </div>
 
 <!-- スペシャル攻撃 UI -->
