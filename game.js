@@ -55,16 +55,33 @@ const enemyBounties = {
   dragon: 500
 };
 
+const speedLevels = [1,1.5,2];
+let speedIndex = 0;
+let gameSpeed = speedLevels[speedIndex];
+
+function toggleSpeed(){
+  speedIndex = (speedIndex + 1) % speedLevels.length;
+  gameSpeed = speedLevels[speedIndex];
+  const btn = document.getElementById("speedBtn");
+  if(btn) btn.textContent = `x${gameSpeed}`;
+}
+
 function startGame(){
   document.getElementById("menu").style.display="none";
   document.getElementById("settings").style.display="none";
   document.getElementById("help").style.display="none";
   document.getElementById("title").style.display="none";
+  document.getElementById("gameArea").style.display="block";
   canvas.style.display="block";
   document.getElementById("ui").style.display="block";
 
     // ✅ ここを追加
   document.getElementById("specialUI").style.display = "block";
+
+  speedIndex = 0;
+  gameSpeed = speedLevels[speedIndex];
+  const sb = document.getElementById("speedBtn");
+  if(sb) sb.textContent = `x${gameSpeed}`;
 
   playerBaseHP=100; enemyBaseHP=100;
   playerUnits=[]; enemyUnits=[]; projectiles=[]; hitMarks=[]; swingMarks=[]; specialEffects=[];
@@ -228,7 +245,7 @@ function loop(){
     }
   }
 
-  for(const u of [...playerUnits,...enemyUnits]) if(u.cooldown>0) u.cooldown--;
+  for(const u of [...playerUnits,...enemyUnits]) if(u.cooldown>0) u.cooldown = Math.max(0, u.cooldown - gameSpeed);
 
   for(const pr of projectiles){ pr.update(); pr.draw(); }
   projectiles = projectiles.filter(pr=>pr.active);
@@ -255,9 +272,9 @@ function loop(){
   playerUnits = playerUnits.filter(u=>u.hp>0 && u.y>0);
 
 // === マナ自動回復 ===
-mana.freeze = Math.min(maxMana.freeze, mana.freeze + 0.167);  // 10秒でMAX
-mana.meteor = Math.min(maxMana.meteor, mana.meteor + 0.0625); // 40秒でMAX
-mana.heal   = Math.min(maxMana.heal,   mana.heal   + 0.1);    // 20秒でMAX
+mana.freeze = Math.min(maxMana.freeze, mana.freeze + 0.167 * gameSpeed);  // 10秒でMAX
+mana.meteor = Math.min(maxMana.meteor, mana.meteor + 0.0625 * gameSpeed); // 40秒でMAX
+mana.heal   = Math.min(maxMana.heal,   mana.heal   + 0.1 * gameSpeed);    // 20秒でMAX
 
 updateManaUI("freeze");
 updateManaUI("meteor");
@@ -346,3 +363,4 @@ window.showHelp = showHelp;
 window.backToMenuFromHelp = backToMenuFromHelp;
 window.chooseUnit = chooseUnit;
 window.useSpecial = useSpecial;
+window.toggleSpeed = toggleSpeed;
