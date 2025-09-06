@@ -239,6 +239,7 @@ function triggerSpecial(type,x,y){
     },5000);
     mana.freeze = 0;
     specialEffects.push(new SpecialCircle(x,y,"gray"));
+    specialEffects.push(new SpecialText("❄️ フリーズ！！"));
     updateManaUI("freeze");
   }
 
@@ -248,6 +249,7 @@ function triggerSpecial(type,x,y){
     }
     mana.meteor = 0;
     specialEffects.push(new SpecialCircle(x,y,"red"));
+    specialEffects.push(new SpecialText("☄️ メテオ！！"));
     updateManaUI("meteor");
   }
 
@@ -257,6 +259,7 @@ function triggerSpecial(type,x,y){
     }
     mana.heal = 0;
     specialEffects.push(new SpecialCircle(x,y,"green"));
+    specialEffects.push(new SpecialText("✨ ヒーリング！！"));
     updateManaUI("heal");
   }
 }
