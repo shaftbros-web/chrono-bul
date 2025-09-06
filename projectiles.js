@@ -5,7 +5,7 @@ class Projectile{
     const dx=this.target.x-this.x, dy=this.target.y-this.y;
     const d=Math.hypot(dx,dy);
     if(d<5){ this.target.hp-=this.atk; hitMarks.push(new HitMark(this.target.x,this.target.y)); this.active=false; }
-    else { this.x += (dx/d)*this.speed; this.y += (dy/d)*this.speed; }
+    else { this.x += (dx/d)*this.speed*gameSpeed; this.y += (dy/d)*this.speed*gameSpeed; }
   }
   draw(){ ctx.fillStyle=this.color; ctx.beginPath(); ctx.arc(this.x,this.y,4,0,Math.PI*2); ctx.fill(); }
 }
@@ -16,16 +16,16 @@ class HealProjectile{
     const dx=this.target.x-this.x, dy=this.target.y-this.y;
     const d=Math.hypot(dx,dy);
     if(d<5){ this.target.hp += this.amount; hitMarks.push(new HealMark(this.target.x,this.target.y)); this.active=false; }
-    else { this.x += (dx/d)*this.speed; this.y += (dy/d)*this.speed; }
+    else { this.x += (dx/d)*this.speed*gameSpeed; this.y += (dy/d)*this.speed*gameSpeed; }
   }
   draw(){ ctx.fillStyle="lime"; ctx.beginPath(); ctx.arc(this.x,this.y,4,0,Math.PI*2); ctx.fill(); }
 }
-class HitMark{ constructor(x,y){ this.x=x; this.y=y; this.life=15; } update(){ this.life--; }
+class HitMark{ constructor(x,y){ this.x=x; this.y=y; this.life=15; } update(){ this.life-=gameSpeed; }
   draw(){ ctx.lineWidth=3; ctx.strokeStyle="red"; ctx.beginPath(); ctx.moveTo(this.x-8,this.y-8); ctx.lineTo(this.x+8,this.y+8);
          ctx.moveTo(this.x+8,this.y-8); ctx.lineTo(this.x-8,this.y+8); ctx.stroke(); ctx.lineWidth=1; } }
-class HealMark{ constructor(x,y){ this.x=x; this.y=y; this.life=15; } update(){ this.life--; }
+class HealMark{ constructor(x,y){ this.x=x; this.y=y; this.life=15; } update(){ this.life-=gameSpeed; }
   draw(){ ctx.strokeStyle="lime"; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(this.x,this.y,14,0,Math.PI*2); ctx.stroke(); ctx.lineWidth=1; } }
-class SwingMark{ constructor(x,y,side){ this.x=x; this.y=y; this.life=12; this.side=side; } update(){ this.life--; }
+class SwingMark{ constructor(x,y,side){ this.x=x; this.y=y; this.life=12; this.side=side; } update(){ this.life-=gameSpeed; }
   draw(){ ctx.save(); ctx.lineWidth=3; ctx.strokeStyle=(this.side==="player")?"#88f":"#f88";
          ctx.beginPath(); ctx.arc(this.x,this.y,16,-Math.PI/3,0); ctx.stroke();
          ctx.beginPath(); ctx.arc(this.x,this.y,12,0,Math.PI/3); ctx.stroke(); ctx.restore(); } }
@@ -39,7 +39,7 @@ class SpecialCircle{
     this.radius=0; this.active=true; this.count=0;
   }
   update(){
-    this.radius += 8;
+    this.radius += 8*gameSpeed;
     if(this.radius > 140){
       this.count++;
       if(this.count>=3) this.active=false;
@@ -60,7 +60,7 @@ class SpecialCircle{
 // 特殊攻撃の字幕表示
 class SpecialText{
   constructor(text){ this.text=text; this.life=60; this.active=true; }
-  update(){ this.life--; if(this.life<=0) this.active=false; }
+  update(){ this.life-=gameSpeed; if(this.life<=0) this.active=false; }
   draw(){
     ctx.save();
     ctx.fillStyle="white";

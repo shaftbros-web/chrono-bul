@@ -77,7 +77,7 @@ class Unit {
       }
     }
 
-    this.y += (this.side==="player" ? -this.speed : this.speed);
+    this.y += (this.side==="player" ? -this.speed : this.speed) * gameSpeed;
   }
 }
 
