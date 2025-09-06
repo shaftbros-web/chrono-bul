@@ -35,6 +35,11 @@ const unitCosts = {
   archer: 150,
   healer: 120
 };
+const unitNames = {
+  swordsman: "ナイト",
+  archer: "アーチャー",
+  healer: "クレリック"
+};
 const enemyBounties = {
   goblin: 20,
   orc: 40,
@@ -120,13 +125,11 @@ function updateManaUI(type){
 function updateGoldUI(){
   const display = document.getElementById("goldDisplay");
   if(display) display.textContent = `Gold: ${playerGold}`;
-  const buttons = document.querySelectorAll('#ui button');
+  const buttons = document.querySelectorAll('#ui .unit-btn');
   buttons.forEach(btn => {
-    const match = btn.getAttribute('onclick')?.match(/'([^']+)'/);
-    if(match){
-      const type = match[1];
-      btn.disabled = playerGold < unitCosts[type];
-    }
+    const type = btn.dataset.unit;
+    btn.textContent = `${unitNames[type]}召喚 (${unitCosts[type]}G)`;
+    btn.disabled = playerGold < unitCosts[type];
   });
 }
 
