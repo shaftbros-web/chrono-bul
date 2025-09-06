@@ -47,7 +47,7 @@ class SpecialCircle{
   draw(){
     ctx.save();
     ctx.strokeStyle=this.color;
-    ctx.lineWidth = 20;
+    ctx.lineWidth = 10;
     ctx.beginPath();
     ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
     ctx.stroke();
