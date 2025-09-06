@@ -220,13 +220,13 @@ function loop(){
     if(e.target && e.target.hp>0){
       // 戦闘中は移動・射撃なし
     }else{
-      if(e.role==="shaman" && e.cooldown<=0 && playerUnits.length>0){
-        const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
-        if(inUnitRange(e,t)){ 
-          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"purple")); 
-          e.cooldown=160;  // ★ 80 → 160
+        if(e.role==="shaman" && e.cooldown<=0 && playerUnits.length>0){
+          const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
+          if(inUnitRange(e,t)){
+            projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"blue",{shape:"arrow"}));
+            e.cooldown=160;  // ★ 80 → 160
+          }
         }
-      }
       if(e.role==="phantom" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
         if(inUnitRange(e,t)){ 

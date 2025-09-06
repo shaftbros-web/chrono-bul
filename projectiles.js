@@ -1,5 +1,8 @@
 class Projectile{
-  constructor(x,y,target,atk,color="white"){ this.x=x; this.y=y; this.target=target; this.atk=atk; this.speed=3; this.active=true; this.color=color; }
+  constructor(x,y,target,atk,color="white",opts={}){
+    this.x=x; this.y=y; this.target=target; this.atk=atk; this.speed=3; this.active=true; this.color=color;
+    this.shape = opts.shape || "circle";
+  }
   update(){
     if(!this.target || this.target.hp<=0){ this.active=false; return; }
     const dx=this.target.x-this.x, dy=this.target.y-this.y;
@@ -7,7 +10,23 @@ class Projectile{
     if(d<5){ this.target.hp-=this.atk; hitMarks.push(new HitMark(this.target.x,this.target.y)); this.active=false; }
     else { this.x += (dx/d)*this.speed*gameSpeed; this.y += (dy/d)*this.speed*gameSpeed; }
   }
-  draw(){ ctx.fillStyle=this.color; ctx.beginPath(); ctx.arc(this.x,this.y,4,0,Math.PI*2); ctx.fill(); }
+  draw(){
+    ctx.fillStyle=this.color;
+    if(this.shape==="arrow"){
+      const ang = this.target ? Math.atan2(this.target.y-this.y,this.target.x-this.x) : 0;
+      ctx.save();
+      ctx.translate(this.x,this.y);
+      ctx.rotate(ang);
+      ctx.beginPath();
+      ctx.moveTo(-4,-2); ctx.lineTo(4,0); ctx.lineTo(-4,2); ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }else{
+      ctx.beginPath();
+      ctx.arc(this.x,this.y,4,0,Math.PI*2);
+      ctx.fill();
+    }
+  }
 }
 class HealProjectile{
   constructor(x,y,target,amount){ this.x=x; this.y=y; this.target=target; this.amount=amount; this.speed=3; this.active=true; }
