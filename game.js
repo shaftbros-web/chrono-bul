@@ -3,8 +3,9 @@
 // =====================
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-let playerBaseHP, enemyBaseHP, playerUnits, enemyUnits, projectiles, hitMarks, swingMarks;
+let playerBaseHP, enemyBaseHP, playerUnits, enemyUnits, projectiles, hitMarks, swingMarks, specialEffects;
 let pendingUnitType = null;
+let pendingSpecial = null;
 let enemySpawnTimer = null;
 
 // 近接判定
@@ -39,16 +40,24 @@ function startGame(){
   document.getElementById("specialUI").style.display = "block";
 
   playerBaseHP=100; enemyBaseHP=100;
-  playerUnits=[]; enemyUnits=[]; projectiles=[]; hitMarks=[]; swingMarks=[];
+  playerUnits=[]; enemyUnits=[]; projectiles=[]; hitMarks=[]; swingMarks=[]; specialEffects=[];
+  pendingSpecial = null;
   if(enemySpawnTimer) clearInterval(enemySpawnTimer);
   enemySpawnTimer = setInterval(spawnEnemy, 4000);
 
   canvas.onclick = (e)=>{
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    if(pendingSpecial){
+      triggerSpecial(pendingSpecial, x, y);
+      pendingSpecial = null;
+      return;
+    }
     if(!pendingUnitType) return;
-    const rect=canvas.getBoundingClientRect();
-    const lane=Math.floor((e.clientX-rect.left)/(canvas.width/5));
+    const lane = Math.floor(x/(canvas.width/5));
     playerUnits.push(new Unit(pendingUnitType,"player",lane,canvas.height-40));
-    pendingUnitType=null;
+    pendingUnitType = null;
   };
 
   requestAnimationFrame(loop);
@@ -170,6 +179,8 @@ function loop(){
   hitMarks = hitMarks.filter(h=>h.life>0);
   for(const s of swingMarks){ s.update(); s.draw(); }
   swingMarks = swingMarks.filter(s=>s.life>0);
+  for(const fx of specialEffects){ fx.update(); fx.draw(); }
+  specialEffects = specialEffects.filter(fx=>fx.active);
 
   // 到達処理
   playerUnits = playerUnits.filter(u=>u.hp>0 && u.y>0);
@@ -205,35 +216,49 @@ function endScreen(text,color){
 function chooseUnit(type){ pendingUnitType=type; }
 
 function useSpecial(type){
-  if(type==="freeze" && mana.freeze >= maxMana.freeze){
-    // 5秒間、敵を停止
-    for(const e of enemyUnits){ e.speedBackup = e.speed; e.speed = 0; }
+  if(mana[type] >= maxMana[type]){
+    pendingSpecial = type;
+  }
+}
+
+function triggerSpecial(type,x,y){
+  const radius = 140;
+  if(type === "freeze"){
+    const affected=[];
+    for(const e of enemyUnits){
+      if(Math.hypot(e.x - x, e.y - y) <= radius){
+        e.speedBackup = e.speed;
+        e.speed = 0;
+        affected.push(e);
+      }
+    }
     setTimeout(()=>{
-      for(const e of enemyUnits){ if(e.speedBackup !== undefined){ e.speed = e.speedBackup; delete e.speedBackup; } }
-    }, 5000);
+      for(const e of affected){
+        if(e.speedBackup !== undefined){ e.speed = e.speedBackup; delete e.speedBackup; }
+      }
+    },5000);
     mana.freeze = 0;
+    specialEffects.push(new SpecialCircle(x,y,"gray"));
+    updateManaUI("freeze");
   }
 
-  if(type==="meteor" && mana.meteor >= maxMana.meteor){
-    // 画面内の敵に大ダメージ
-    for(const e of enemyUnits){ e.hp -= 50; }
+  if(type === "meteor"){
+    for(const e of enemyUnits){
+      if(Math.hypot(e.x - x, e.y - y) <= radius){ e.hp -= 50; }
+    }
     mana.meteor = 0;
+    specialEffects.push(new SpecialCircle(x,y,"red"));
+    updateManaUI("meteor");
   }
 
-  if(type==="heal" && mana.heal >= maxMana.heal){
-    // 味方全体を回復
-    for(const p of playerUnits){ p.hp += 30; }
+  if(type === "heal"){
+    for(const p of playerUnits){
+      if(Math.hypot(p.x - x, p.y - y) <= radius){ p.hp += 30; }
+    }
     mana.heal = 0;
-
+    specialEffects.push(new SpecialCircle(x,y,"green"));
+    updateManaUI("heal");
   }
-
-  // UI更新
-  updateManaUI("freeze");
-  updateManaUI("meteor");
-  updateManaUI("heal");
-
-  mana[type] = 0;
-  updateManaUI(type);
 }
 
 
@@ -245,3 +270,4 @@ window.backToMenu = backToMenu;
 window.showHelp = showHelp;
 window.backToMenuFromHelp = backToMenuFromHelp;
 window.chooseUnit = chooseUnit;
+window.useSpecial = useSpecial;

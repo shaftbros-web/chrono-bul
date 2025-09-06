@@ -45,14 +45,6 @@ function applySettingsAndStart(){
   startGame();
 }
 
-function updateManaUI(type){
-  const ratio = (mana[type] / maxMana[type]) * 100;
-  document.getElementById(type+"Fill").style.width = ratio + "%";
-  const btn = document.getElementById(type+"Btn");
-  if (btn) btn.disabled = (mana[type] < maxMana[type]); // 満タンでボタン有効
-}
-
-
 // 単体モード開始
 function startSingleMode(type){
   singleSpawnType = type;
