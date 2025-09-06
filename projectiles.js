@@ -1,5 +1,13 @@
 class Projectile{
-  constructor(x,y,target,atk,{color="white",shape="circle"}={}){ this.x=x; this.y=y; this.target=target; this.atk=atk; this.speed=3; this.active=true; this.color=color; this.shape=shape; }
+  constructor(x,y,target,atk,colorOrOptions="white"){
+    this.x=x; this.y=y; this.target=target; this.atk=atk; this.speed=3; this.active=true;
+    if(typeof colorOrOptions==="object"){
+      const {color="white",shape="circle"}=colorOrOptions;
+      this.color=color; this.shape=shape;
+    }else{
+      this.color=colorOrOptions; this.shape="circle";
+    }
+  }
   update(){
     if(!this.target || this.target.hp<=0){ this.active=false; return; }
     const dx=this.target.x-this.x, dy=this.target.y-this.y;

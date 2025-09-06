@@ -223,14 +223,14 @@ function loop(){
       if(e.role==="shaman" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
         if(inUnitRange(e,t)){
-          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,{color:"purple"}));
+          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"purple"));
           e.cooldown=160;  // ★ 80 → 160
         }
       }
       if(e.role==="phantom" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
         if(inUnitRange(e,t)){
-          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,{color:"yellow"}));
+          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"yellow"));
           e.cooldown=100;  // ★ 50 → 100
         }
       }
@@ -244,7 +244,7 @@ function loop(){
       if(e.role==="dragon" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
         if(inUnitRange(e,t)){
-          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,{color:"orange"}));
+          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"orange"));
           e.cooldown=150;
         }
       }
