@@ -257,7 +257,13 @@ updateManaUI("heal");
 
   
   if(playerBaseHP<=0){ endScreen("GAME OVER","red"); return; }
-  if(enemyBaseHP<=0){ endScreen("VICTORY!","yellow"); return; }
+  if(enemyBaseHP<=0){
+    const remaining = playerUnits.filter(u => u.hp > 0).length;
+    playerGold += remaining * 150;
+    updateGoldUI();
+    endScreen("VICTORY!","yellow");
+    return;
+  }
 
   requestAnimationFrame(loop);
 }
