@@ -32,7 +32,37 @@ class SwingMark{ constructor(x,y,side){ this.x=x; this.y=y; this.life=12; this.s
 
 // 特殊攻撃の範囲エフェクト
 class SpecialCircle{
-  constructor(x,y,color){ this.x=x; this.y=y; this.color=color; this.radius=0; this.active=true; }
-  update(){ this.radius += 8; if(this.radius > 140) this.active=false; }
-  draw(){ ctx.strokeStyle=this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.radius,0,Math.PI*2); ctx.stroke(); }
+  constructor(x,y,color){
+    this.x=x; this.y=y; this.color=color;
+    this.radius=0; this.active=true; this.count=0;
+  }
+  update(){
+    this.radius += 8;
+    if(this.radius > 140){
+      this.count++;
+      if(this.count>=3) this.active=false;
+      else this.radius=0;
+    }
+  }
+  draw(){
+    ctx.strokeStyle=this.color;
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
+    ctx.stroke();
+  }
+}
+
+// 特殊攻撃の字幕表示
+class SpecialText{
+  constructor(text){ this.text=text; this.life=60; this.active=true; }
+  update(){ this.life--; if(this.life<=0) this.active=false; }
+  draw(){
+    ctx.save();
+    ctx.fillStyle="white";
+    ctx.font="40px sans-serif";
+    ctx.textAlign="center";
+    ctx.globalAlpha = this.life/60;
+    ctx.fillText(this.text, canvas.width/2, canvas.height/2);
+    ctx.restore();
+  }
 }
