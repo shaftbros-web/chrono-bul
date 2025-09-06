@@ -28,6 +28,23 @@ function inUnitRange(a,b){
 let mana = { freeze:0, meteor:0, heal:0 };
 const maxMana = { freeze:100, meteor:150, heal:120 };
 
+// ゴールドとコスト設定
+let playerGold = 500;
+const unitCosts = {
+  swordsman: 100,
+  archer: 150,
+  healer: 120
+};
+const enemyBounties = {
+  goblin: 20,
+  orc: 40,
+  shaman: 60,
+  phantom: 80,
+  golem: 150,
+  giantGolem: 300,
+  dragon: 500
+};
+
 function startGame(){
   document.getElementById("menu").style.display="none";
   document.getElementById("settings").style.display="none";
@@ -42,6 +59,8 @@ function startGame(){
   playerBaseHP=100; enemyBaseHP=100;
   playerUnits=[]; enemyUnits=[]; projectiles=[]; hitMarks=[]; swingMarks=[]; specialEffects=[];
   pendingSpecial = null;
+  playerGold = 500;
+  updateGoldUI();
   if(enemySpawnTimer) clearInterval(enemySpawnTimer);
   enemySpawnTimer = setInterval(spawnEnemy, 4000);
 
@@ -55,8 +74,12 @@ function startGame(){
       return;
     }
     if(!pendingUnitType) return;
+    const cost = unitCosts[pendingUnitType];
+    if(playerGold < cost) return;
     const lane = Math.floor(x/(canvas.width/5));
     playerUnits.push(new Unit(pendingUnitType,"player",lane,canvas.height-40));
+    playerGold -= cost;
+    updateGoldUI();
     pendingUnitType = null;
   };
 
@@ -92,6 +115,19 @@ function updateManaUI(type){
     btn.disabled = true;
     bar.classList.remove("mana-full");
   }
+}
+
+function updateGoldUI(){
+  const display = document.getElementById("goldDisplay");
+  if(display) display.textContent = `Gold: ${playerGold}`;
+  const buttons = document.querySelectorAll('#ui button');
+  buttons.forEach(btn => {
+    const match = btn.getAttribute('onclick')?.match(/'([^']+)'/);
+    if(match){
+      const type = match[1];
+      btn.disabled = playerGold < unitCosts[type];
+    }
+  });
 }
 
 
@@ -186,9 +222,18 @@ function loop(){
 
   // 到達処理
   playerUnits = playerUnits.filter(u=>u.hp>0 && u.y>0);
-  enemyUnits  = enemyUnits.filter(u=>u.hp>0 && u.y<canvas.height);
+  enemyUnits  = enemyUnits.filter(e=>{
+    if(e.hp<=0){
+      playerGold += enemyBounties[e.type] || 0;
+      updateGoldUI();
+      return false;
+    }
+    return e.y<canvas.height;
+  });
   for(const e of enemyUnits){ if(e.y>=canvas.height-30){ playerBaseHP-=e.atk; e.hp=0; } }
-  for(const p of playerUnits){ if(p.y<=30){ enemyBaseHP-=p.atk; p.hp=0; } }
+  for(const p of playerUnits){ if(p.y<=30){ enemyBaseHP-=p.atk; playerGold += 150; updateGoldUI(); p.hp=0; } }
+  enemyUnits = enemyUnits.filter(e=>e.hp>0 && e.y<canvas.height);
+  playerUnits = playerUnits.filter(u=>u.hp>0 && u.y>0);
 
 // === マナ自動回復 ===
 mana.freeze = Math.min(maxMana.freeze, mana.freeze + 0.167);  // 10秒でMAX
