@@ -33,6 +33,38 @@
     background:linear-gradient(#333, #111);
     transform:translateY(2px);
   }
+
+  .special-btn {
+    margin:5px;
+    padding:8px 16px;
+    font-size:14px;
+    color:#fff;
+    background:linear-gradient(#1e88e5, #0d47a1);
+    border:1px solid #0d47a1;
+    cursor:pointer;
+    transition:background 0.3s, transform 0.05s, box-shadow 0.3s;
+    box-shadow:0 0 5px rgba(30,136,229,0.7);
+  }
+  .special-btn:hover {
+    background:linear-gradient(#2196f3,#1565c0);
+    box-shadow:0 0 8px rgba(30,136,229,1);
+  }
+  .special-btn:active,
+  .special-btn.pressed {
+    background:linear-gradient(#0d47a1,#002171);
+    transform:translateY(2px);
+    box-shadow:0 0 3px rgba(0,0,0,0.5) inset;
+  }
+  .special-btn.selected {
+    box-shadow:0 0 12px gold;
+  }
+  .special-btn:disabled {
+    background:#555;
+    color:#999;
+    border:1px solid #444;
+    box-shadow:none;
+    cursor:not-allowed;
+  }
   #help, #settings { display:none; text-align:left; max-width:700px; margin:20px auto; padding:12px; background:#111; border:1px solid #555; }
   @keyframes manaBlink {
     0%, 100% { filter: drop-shadow(0 0 2px gold); opacity:1; }
@@ -105,17 +137,17 @@
   <div>
     <label>❄️ フリーズ</label>
     <progress id="freezeBar" value="0" max="100"></progress>
-    <button id="freezeBtn" onclick="useSpecial('freeze')" disabled>発動</button>
+    <button id="freezeBtn" class="special-btn" onclick="useSpecial('freeze')" disabled>発動</button>
   </div>
   <div>
     <label>☄️ メテオ</label>
     <progress id="meteorBar" value="0" max="150"></progress>
-    <button id="meteorBtn" onclick="useSpecial('meteor')" disabled>発動</button>
+    <button id="meteorBtn" class="special-btn" onclick="useSpecial('meteor')" disabled>発動</button>
   </div>
   <div>
     <label>✨ ヒーリング</label>
     <progress id="healBar" value="0" max="120"></progress>
-    <button id="healBtn" onclick="useSpecial('heal')" disabled>発動</button>
+    <button id="healBtn" class="special-btn" onclick="useSpecial('heal')" disabled>発動</button>
   </div>
 </div>
 

@@ -3,7 +3,7 @@
 // =====================
 let canvas;
 let ctx;
-document.querySelectorAll('.unit-btn').forEach(btn => {
+document.querySelectorAll('.unit-btn, .special-btn').forEach(btn => {
   btn.addEventListener('mousedown', () => btn.classList.add('pressed'));
   btn.addEventListener('mouseup', () => btn.classList.remove('pressed'));
   btn.addEventListener('mouseleave', () => btn.classList.remove('pressed'));
@@ -80,6 +80,7 @@ function startGame(){
 
     // ✅ ここを追加
   document.getElementById("specialUI").style.display = "block";
+  document.querySelectorAll('.special-btn').forEach(btn => btn.classList.remove('selected'));
 
   speedIndex = 0;
   gameSpeed = speedLevels[speedIndex];
@@ -100,6 +101,8 @@ function startGame(){
     const y = e.clientY - rect.top;
     if(pendingSpecial){
       triggerSpecial(pendingSpecial, x, y);
+      const btn = document.getElementById(pendingSpecial + 'Btn');
+      if(btn) btn.classList.remove('selected');
       pendingSpecial = null;
       return;
     }
@@ -310,6 +313,9 @@ function chooseUnit(type){ pendingUnitType=type; }
 function useSpecial(type){
   if(mana[type] >= maxMana[type]){
     pendingSpecial = type;
+    document.querySelectorAll('.special-btn').forEach(btn => btn.classList.remove('selected'));
+    const btn = document.getElementById(type + 'Btn');
+    if(btn) btn.classList.add('selected');
   }
 }
 
