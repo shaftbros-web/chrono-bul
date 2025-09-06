@@ -1,8 +1,8 @@
 // =====================
 // ゲーム進行制御
 // =====================
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+let canvas;
+let ctx;
 document.querySelectorAll('.unit-btn').forEach(btn => {
   btn.addEventListener('mousedown', () => btn.classList.add('pressed'));
   btn.addEventListener('mouseup', () => btn.classList.remove('pressed'));
@@ -67,6 +67,9 @@ function toggleSpeed(){
 }
 
 function startGame(){
+  canvas = document.getElementById("gameCanvas");
+  ctx = canvas.getContext("2d");
+
   document.getElementById("menu").style.display="none";
   document.getElementById("settings").style.display="none";
   document.getElementById("help").style.display="none";
