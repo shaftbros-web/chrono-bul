@@ -244,7 +244,7 @@ function triggerSpecial(type,x,y){
 
   if(type === "meteor"){
     for(const e of enemyUnits){
-      if(Math.hypot(e.x - x, e.y - y) <= radius){ e.hp -= 50; }
+      if(Math.hypot(e.x - x, e.y - y) <= radius){ e.hp -= 200; }
     }
     mana.meteor = 0;
     specialEffects.push(new SpecialCircle(x,y,"red"));
@@ -253,7 +253,7 @@ function triggerSpecial(type,x,y){
 
   if(type === "heal"){
     for(const p of playerUnits){
-      if(Math.hypot(p.x - x, p.y - y) <= radius){ p.hp += 30; }
+      if(Math.hypot(p.x - x, p.y - y) <= radius){ p.hp += 100; }
     }
     mana.heal = 0;
     specialEffects.push(new SpecialCircle(x,y,"green"));
