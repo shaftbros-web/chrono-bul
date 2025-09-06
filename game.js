@@ -237,7 +237,7 @@ function loop(){
       if(e.role==="golem" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
         if(inUnitRange(e,t)){
-          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"brown"));
+          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,{shape:"square", color:"brown"}));
           e.cooldown=200;  // ★ 100 → 200
         }
       }
