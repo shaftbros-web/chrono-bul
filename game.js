@@ -23,30 +23,39 @@ const LANES = 3;
 
 // 近接判定
 function inMeleeRange(a,b){
-  const laneDiff = Math.abs(a.lane-b.lane);
-  const dy = Math.abs(a.y-b.y);
-  if(a.role==="dragon" || b.role==="dragon"){
-    if(laneDiff<=1) return dy<=24;
+  const laneDiff = Math.abs(a.lane - b.lane);
+  const dy = Math.abs(a.y - b.y);
+
+  // Dragons span multiple lanes; allow adjacent lane combat for them
+  if(a.role === "dragon" || b.role === "dragon"){
+    if(laneDiff <= 1) return dy <= 24;
     return false;
   }
-  if(laneDiff===0) return dy<=24;
-  if(laneDiff===1) return dy<=20;
-  return false;
+
+  // Normal units only fight within the same lane
+  if(laneDiff !== 0) return false;
+  return dy <= 24;
 }
 
 // 射程判定
 function inUnitRange(a,b){
-  let laneDiff = a.lane-b.lane;
-  let dx = laneDiff*(canvas.width/LANES);
-  const dy = (a.y-b.y);
-  if(a.role==="dragon" || b.role==="dragon"){
-    if(Math.abs(laneDiff)<=1){
+  const laneDiff = a.lane - b.lane;
+  const dy = a.y - b.y;
+
+  // Dragons can target adjacent lanes seamlessly
+  if(a.role === "dragon" || b.role === "dragon"){
+    let dx;
+    if(Math.abs(laneDiff) <= 1){
       dx = 0;
     }else{
-      dx = (Math.abs(laneDiff)-1)*(canvas.width/LANES)*Math.sign(laneDiff);
+      dx = (Math.abs(laneDiff) - 1) * (canvas.width / LANES) * Math.sign(laneDiff);
     }
+    return Math.hypot(dx, dy) <= a.range;
   }
-  return Math.hypot(dx,dy) <= a.range;
+
+  // Other units can only target within the same lane
+  if(laneDiff !== 0) return false;
+  return Math.abs(dy) <= a.range;
 }
 
 // マナ変数の定義
