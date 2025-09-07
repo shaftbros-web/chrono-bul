@@ -35,6 +35,16 @@ class Projectile{
       ctx.closePath();
       ctx.fill();
       ctx.restore();
+    }else if(this.shape==="fireball"){
+      ctx.save();
+      const g = ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size);
+      g.addColorStop(0,"orange");
+      g.addColorStop(1,"red");
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+      ctx.fill();
+      ctx.restore();
     }else{
       ctx.beginPath();
       ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
