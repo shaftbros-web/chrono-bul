@@ -18,6 +18,9 @@ let pendingUnitType = null;
 let pendingSpecial = null;
 let enemySpawnTimer = null;
 
+// レーン数
+const LANES = 3;
+
 // 近接判定
 function inMeleeRange(a,b){
   const laneDiff = Math.abs(a.lane-b.lane);
@@ -34,13 +37,13 @@ function inMeleeRange(a,b){
 // 射程判定
 function inUnitRange(a,b){
   let laneDiff = a.lane-b.lane;
-  let dx = laneDiff*(canvas.width/5);
+  let dx = laneDiff*(canvas.width/LANES);
   const dy = (a.y-b.y);
   if(a.role==="dragon" || b.role==="dragon"){
     if(Math.abs(laneDiff)<=1){
       dx = 0;
     }else{
-      dx = (Math.abs(laneDiff)-1)*(canvas.width/5)*Math.sign(laneDiff);
+      dx = (Math.abs(laneDiff)-1)*(canvas.width/LANES)*Math.sign(laneDiff);
     }
   }
   return Math.hypot(dx,dy) <= a.range;
@@ -126,7 +129,7 @@ function startGame(){
     if(!pendingUnitType) return;
     const cost = unitCosts[pendingUnitType];
     if(playerGold < cost) return;
-    const lane = Math.floor(x/(canvas.width/5));
+    const lane = Math.floor(x/(canvas.width/LANES));
     playerUnits.push(new Unit(pendingUnitType,"player",lane,canvas.height-40));
     playerGold -= cost;
     updateGoldUI();
@@ -147,7 +150,7 @@ function spawnEnemy(){
   // 通常モード
   const types=["goblin","orc","golem","shaman","phantom"];
   const type=types[Math.floor(Math.random()*types.length)];
-  const lane=Math.floor(Math.random()*5);
+  const lane=Math.floor(Math.random()*LANES);
   enemyUnits.push(new Unit(type,"enemy",lane,40));
 }
 
@@ -182,8 +185,8 @@ function updateGoldUI(){
 function loop(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.strokeStyle="#555";
-  for(let i=1;i<5;i++){ 
-    ctx.beginPath(); ctx.moveTo(i*canvas.width/5,0); ctx.lineTo(i*canvas.width/5,canvas.height); ctx.stroke(); 
+  for(let i=1;i<LANES;i++){
+    ctx.beginPath(); ctx.moveTo(i*canvas.width/LANES,0); ctx.lineTo(i*canvas.width/LANES,canvas.height); ctx.stroke();
   }
   ctx.fillStyle="white";
   ctx.fillText(`自陣HP:${playerBaseHP}`,10,15);

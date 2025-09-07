@@ -22,7 +22,8 @@ let unitStats = {
 class Unit {
   constructor(type, side, lane, y){
     this.type=type; this.side=side; this.lane=lane;
-    this.x = lane*(canvas.width/5) + (canvas.width/10);
+    const laneWidth = canvas.width / LANES;
+    this.x = lane*laneWidth + laneWidth/2;
     this.y = y;
     const st = unitStats[type];
     this.hp=st.hp; this.atk=st.atk;
@@ -53,7 +54,7 @@ class Unit {
 
   draw(){
     if(this.role==="dragon"){
-      const width = canvas.width * 3/5;
+      const width = canvas.width * (3/LANES);
       const height = 60;
       ctx.fillStyle=this.color;
       ctx.fillRect(this.x - width/2, this.y - height/2, width, height);
