@@ -19,7 +19,7 @@ let pendingSpecial = null;
 let enemySpawnTimer = null;
 
 // レーン数
-const LANES = 3;
+const LANES = 5;
 
 // 近接判定
 function inMeleeRange(a,b){
