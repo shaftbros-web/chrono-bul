@@ -20,18 +20,28 @@ let enemySpawnTimer = null;
 
 // 近接判定
 function inMeleeRange(a,b){
-  const laneDiff = Math.abs(a.lane-b.lane);
-  const dy = Math.abs(a.y-b.y);
-  if(laneDiff===0) return dy<=24;
-  if(laneDiff===1) return dy<=20;
+  const laneWidth = canvas.width / 5;
+  const widthA = (a.role === "dragon") ? 3 : 1;
+  const widthB = (b.role === "dragon") ? 3 : 1;
+  const laneDiff = Math.abs(a.lane - b.lane);
+  const gap = laneDiff - (widthA + widthB) / 2;
+  const dy = Math.abs(a.y - b.y);
+
+  if (gap < 0) return dy <= 24;      // レーンが重なっている
+  if (gap === 0) return dy <= 20;    // 隣接している
   return false;
 }
 
 // 射程判定
 function inUnitRange(a,b){
-  const dx = (a.lane-b.lane)*(canvas.width/5);
-  const dy = (a.y-b.y);
-  return Math.hypot(dx,dy) <= a.range;
+  const laneWidth = canvas.width / 5;
+  const widthA = (a.role === "dragon") ? 3 : 1;
+  const widthB = (b.role === "dragon") ? 3 : 1;
+  const laneDiff = a.lane - b.lane;
+  const gap = Math.abs(laneDiff) - (widthA + widthB) / 2;
+  const dx = (gap > 0 ? gap * laneWidth * Math.sign(laneDiff) : 0);
+  const dy = a.y - b.y;
+  return Math.hypot(dx, dy) <= a.range;
 }
 
 // マナ変数の定義
