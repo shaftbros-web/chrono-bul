@@ -22,6 +22,10 @@ let enemySpawnTimer = null;
 function inMeleeRange(a,b){
   const laneDiff = Math.abs(a.lane-b.lane);
   const dy = Math.abs(a.y-b.y);
+  if(a.role==="dragon" || b.role==="dragon"){
+    if(laneDiff<=1) return dy<=24;
+    return false;
+  }
   if(laneDiff===0) return dy<=24;
   if(laneDiff===1) return dy<=20;
   return false;
@@ -29,8 +33,16 @@ function inMeleeRange(a,b){
 
 // 射程判定
 function inUnitRange(a,b){
-  const dx = (a.lane-b.lane)*(canvas.width/5);
+  let laneDiff = a.lane-b.lane;
+  let dx = laneDiff*(canvas.width/5);
   const dy = (a.y-b.y);
+  if(a.role==="dragon" || b.role==="dragon"){
+    if(Math.abs(laneDiff)<=1){
+      dx = 0;
+    }else{
+      dx = (Math.abs(laneDiff)-1)*(canvas.width/5)*Math.sign(laneDiff);
+    }
+  }
   return Math.hypot(dx,dy) <= a.range;
 }
 
