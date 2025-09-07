@@ -52,11 +52,21 @@ class Unit {
   }
 
   draw(){
-    ctx.fillStyle=this.color;
-    ctx.beginPath(); ctx.arc(this.x,this.y,12,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle=(this.side==="player")?"white":"black";
-    ctx.font="14px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
-    ctx.fillText(this.label,this.x,this.y);
+    if(this.role==="dragon"){
+      const width = canvas.width * 3/5;
+      const height = 60;
+      ctx.fillStyle=this.color;
+      ctx.fillRect(this.x - width/2, this.y - height/2, width, height);
+      ctx.fillStyle=(this.side==="player")?"white":"black";
+      ctx.font="24px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
+      ctx.fillText(this.label,this.x,this.y);
+    }else{
+      ctx.fillStyle=this.color;
+      ctx.beginPath(); ctx.arc(this.x,this.y,12,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle=(this.side==="player")?"white":"black";
+      ctx.font="14px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
+      ctx.fillText(this.label,this.x,this.y);
+    }
   }
 
   update(){
