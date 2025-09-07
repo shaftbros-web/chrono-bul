@@ -3,7 +3,12 @@
 // =====================
 let canvas;
 let ctx;
-document.querySelectorAll('.unit-btn, .special-btn').forEach(btn => {
+document.querySelectorAll('.unit-btn').forEach(btn => {
+  btn.addEventListener('mousedown', () => btn.classList.add('pressed'));
+  btn.addEventListener('mouseup', () => btn.classList.remove('pressed'));
+  btn.addEventListener('mouseleave', () => btn.classList.remove('pressed'));
+});
+document.querySelectorAll('.special-btn').forEach(btn => {
   btn.addEventListener('mousedown', () => btn.classList.add('pressed'));
   btn.addEventListener('mouseup', () => btn.classList.remove('pressed'));
   btn.addEventListener('mouseleave', () => btn.classList.remove('pressed'));
