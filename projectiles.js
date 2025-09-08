@@ -18,7 +18,12 @@ class Projectile{
     const dx=this.target.x-this.x, dy=this.target.y-this.y;
     const d=Math.hypot(dx,dy);
     this.angle=Math.atan2(dy,dx);
-    if(d<5){ this.target.hp-=this.atk; hitMarks.push(new HitMark(this.target.x,this.target.y)); this.active=false; }
+    if(d<5){
+      this.target.hp -= this.atk;
+      hitMarks.push(new HitMark(this.target.x,this.target.y));
+      floatingTexts.push(new FloatingText(this.target.x, this.target.y-10, `-${this.atk}`));
+      this.active=false;
+    }
     else { this.x += (dx/d)*this.speed*gameSpeed; this.y += (dy/d)*this.speed*gameSpeed; }
   }
 
@@ -58,7 +63,12 @@ class HealProjectile{
     if(!this.target || this.target.hp<=0){ this.active=false; return; }
     const dx=this.target.x-this.x, dy=this.target.y-this.y;
     const d=Math.hypot(dx,dy);
-    if(d<5){ this.target.hp += this.amount; hitMarks.push(new HealMark(this.target.x,this.target.y)); this.active=false; }
+    if(d<5){
+      this.target.hp += this.amount;
+      hitMarks.push(new HealMark(this.target.x,this.target.y));
+      floatingTexts.push(new FloatingText(this.target.x, this.target.y-10, `+${this.amount}`, "green"));
+      this.active=false;
+    }
     else { this.x += (dx/d)*this.speed*gameSpeed; this.y += (dy/d)*this.speed*gameSpeed; }
   }
   draw(){
@@ -123,6 +133,25 @@ class SpecialText{
     ctx.textAlign="center";
     ctx.globalAlpha = this.life/60;
     ctx.fillText(this.text, canvas.width/2, canvas.height/2);
+    ctx.restore();
+  }
+}
+
+class FloatingText{
+  constructor(x,y,text,color="white"){
+    this.x=x; this.y=y; this.text=text; this.color=color; this.life=30;
+  }
+  update(){
+    this.y -= 0.5*gameSpeed;
+    this.life -= gameSpeed;
+  }
+  draw(){
+    ctx.save();
+    ctx.fillStyle=this.color;
+    ctx.font="16px sans-serif";
+    ctx.textAlign="center";
+    ctx.globalAlpha = this.life/30;
+    ctx.fillText(this.text,this.x,this.y);
     ctx.restore();
   }
 }
