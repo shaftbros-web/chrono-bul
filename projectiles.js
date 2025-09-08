@@ -4,12 +4,12 @@ class Projectile{
     this.x=x; this.y=y; this.target=target; this.atk=atk;
     this.speed=3; this.active=true;
     if(typeof opts === "string"){
-      this.color=opts; this.shape="circle"; this.size=4;
+      this.color=opts; this.shape="circle"; this.size=8;
     }else{
       const o=opts||{};
       this.color=o.color||"white";
       this.shape=o.shape||"circle";
-      this.size=o.size||4;
+      this.size=o.size||8;
     }
     this.angle=0;
   }
@@ -18,10 +18,10 @@ class Projectile{
     const dx=this.target.x-this.x, dy=this.target.y-this.y;
     const d=Math.hypot(dx,dy);
     this.angle=Math.atan2(dy,dx);
-    if(d<5){
+    if(d<10){
       this.target.hp -= this.atk;
       hitMarks.push(new HitMark(this.target.x,this.target.y));
-      floatingTexts.push(new FloatingText(this.target.x, this.target.y-10, `-${this.atk}`));
+      floatingTexts.push(new FloatingText(this.target.x, this.target.y-20, `-${this.atk}`));
       this.active=false;
     }
     else { this.x += (dx/d)*this.speed*gameSpeed; this.y += (dy/d)*this.speed*gameSpeed; }
@@ -73,15 +73,15 @@ class Projectile{
   }
 }
 class HealProjectile{
-  constructor(x,y,target,amount,size=4){ this.x=x; this.y=y; this.target=target; this.amount=amount; this.size=size; this.speed=3; this.active=true; }
+  constructor(x,y,target,amount,size=8){ this.x=x; this.y=y; this.target=target; this.amount=amount; this.size=size; this.speed=3; this.active=true; }
   update(){
     if(!this.target || this.target.hp<=0){ this.active=false; return; }
     const dx=this.target.x-this.x, dy=this.target.y-this.y;
     const d=Math.hypot(dx,dy);
-    if(d<5){
+    if(d<10){
       this.target.hp += this.amount;
       hitMarks.push(new HealMark(this.target.x,this.target.y));
-      floatingTexts.push(new FloatingText(this.target.x, this.target.y-10, `+${this.amount}`, "green"));
+      floatingTexts.push(new FloatingText(this.target.x, this.target.y-20, `+${this.amount}`, "green"));
       this.active=false;
     }
     else { this.x += (dx/d)*this.speed*gameSpeed; this.y += (dy/d)*this.speed*gameSpeed; }
@@ -101,17 +101,17 @@ class HealProjectile{
   }
 }
 class HitMark{ constructor(x,y){ this.x=x; this.y=y; this.life=15; } update(){ this.life-=gameSpeed; }
-  draw(){ ctx.lineWidth=3; ctx.strokeStyle="red"; ctx.beginPath(); ctx.moveTo(this.x-8,this.y-8); ctx.lineTo(this.x+8,this.y+8);
-         ctx.moveTo(this.x+8,this.y-8); ctx.lineTo(this.x-8,this.y+8); ctx.stroke(); ctx.lineWidth=1; } }
+  draw(){ ctx.lineWidth=6; ctx.strokeStyle="red"; ctx.beginPath(); ctx.moveTo(this.x-16,this.y-16); ctx.lineTo(this.x+16,this.y+16);
+         ctx.moveTo(this.x+16,this.y-16); ctx.lineTo(this.x-16,this.y+16); ctx.stroke(); ctx.lineWidth=2; } }
 class HealMark{ constructor(x,y){ this.x=x; this.y=y; this.life=15; } update(){ this.life-=gameSpeed; }
-  draw(){ ctx.strokeStyle="lime"; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(this.x,this.y,14,0,Math.PI*2); ctx.stroke(); ctx.lineWidth=1; } }
+  draw(){ ctx.strokeStyle="lime"; ctx.lineWidth=6; ctx.beginPath(); ctx.arc(this.x,this.y,28,0,Math.PI*2); ctx.stroke(); ctx.lineWidth=2; } }
 class SwingMark{ constructor(x,y,side){ this.x=x; this.y=y; this.life=12; this.side=side; } update(){ this.life-=gameSpeed; }
-  draw(){ ctx.save(); ctx.lineWidth=3; ctx.strokeStyle=(this.side==="player")?"#88f":"#f88";
-         ctx.beginPath(); ctx.arc(this.x,this.y,16,-Math.PI/3,0); ctx.stroke();
-         ctx.beginPath(); ctx.arc(this.x,this.y,12,0,Math.PI/3); ctx.stroke(); ctx.restore(); } }
+  draw(){ ctx.save(); ctx.lineWidth=6; ctx.strokeStyle=(this.side==="player")?"#88f":"#f88";
+         ctx.beginPath(); ctx.arc(this.x,this.y,32,-Math.PI/3,0); ctx.stroke();
+         ctx.beginPath(); ctx.arc(this.x,this.y,24,0,Math.PI/3); ctx.stroke(); ctx.restore(); } }
 
 // 特殊攻撃の範囲エフェクト
-const SPECIAL_CIRCLE_LINE_WIDTH = 10;
+const SPECIAL_CIRCLE_LINE_WIDTH = 20;
 
 class SpecialCircle{
   constructor(x,y,color){
@@ -163,7 +163,7 @@ class FloatingText{
   draw(){
     ctx.save();
     ctx.fillStyle=this.color;
-    ctx.font="16px sans-serif";
+    ctx.font="32px sans-serif";
     ctx.textAlign="center";
     ctx.globalAlpha = this.life/30;
     ctx.fillText(this.text,this.x,this.y);
