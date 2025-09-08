@@ -82,7 +82,7 @@ class Unit {
     // ライフゲージ（左寄せ・最大HP比例）
     const bw = this.maxHp * HP_BAR_SCALE;
     const bh = (this.role==="dragon") ? 6 : 4;
-    const bx = this.lane * laneWidth;
+    const bx = this.lane * laneWidth + 2; // 少し左側にスペースを空ける
     const ratio = Math.max(0, Math.min(this.hp, this.maxHp)) / this.maxHp;
     ctx.fillStyle="black";
     ctx.fillRect(bx, hpBarY, bw, bh);

@@ -57,6 +57,8 @@ function showSettings(){ document.getElementById("menu").style.display="none"; d
 function backToMenu(){   document.getElementById("settings").style.display="none"; document.getElementById("menu").style.display="block"; }
 function showHelp(){     document.getElementById("menu").style.display="none"; document.getElementById("help").style.display="block"; }
 function backToMenuFromHelp(){ document.getElementById("help").style.display="none"; document.getElementById("menu").style.display="block"; }
+function showChangelog(){ document.getElementById("menu").style.display="none"; document.getElementById("changelog").style.display="block"; }
+function backToMenuFromChangelog(){ document.getElementById("changelog").style.display="none"; document.getElementById("menu").style.display="block"; }
 
 // グローバル登録
 window.applySettingsAndStart = applySettingsAndStart;
@@ -65,4 +67,6 @@ window.showSettings = showSettings;
 window.backToMenu = backToMenu;
 window.showHelp = showHelp;
 window.backToMenuFromHelp = backToMenuFromHelp;
+window.showChangelog = showChangelog;
+window.backToMenuFromChangelog = backToMenuFromChangelog;
 window.singleSpawnType = singleSpawnType;
