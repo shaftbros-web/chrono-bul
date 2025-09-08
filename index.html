@@ -83,6 +83,16 @@
   #healBar { accent-color: green; }
   #healBar::-webkit-progress-value { background: green; }
   #healBar::-moz-progress-bar { background: green; }
+
+  /* 📱 スマホ表示で画面下部のスペシャルUIが見切れないように調整 */
+  @media (max-width: 480px) {
+    #gameArea { width: 100%; }
+    #gameCanvas {
+      width: 100%;
+      height: auto;
+      max-height: calc(100vh - 220px); /* UI 分の高さを差し引いて表示領域に収める */
+    }
+  }
 </style>
 </head>
 <body>
