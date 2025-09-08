@@ -1,5 +1,5 @@
 // ---- バージョン管理 ----
-const VERSION = "0.2.31";
+const VERSION = "0.2.32";
 const FULL_TITLE = `Chrono Bulward v${VERSION} (modular)`;
 document.title = FULL_TITLE;
 const titleEl = document.getElementById("titleText");

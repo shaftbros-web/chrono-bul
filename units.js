@@ -17,7 +17,7 @@ let unitStats = {
 };
 
 // ライフゲージの1HPあたりの幅
-const HP_BAR_SCALE = 0.2;
+const HP_BAR_SCALE = 0.4;
 
 // =====================
 // ユニットクラス
@@ -62,26 +62,26 @@ class Unit {
     let hpBarY;
 
     if(this.role==="dragon"){
-      const width = canvas.width * (3/LANES);
-      const height = 60;
+      const width = Math.min(canvas.width, canvas.width * (6/LANES));
+      const height = 120;
       ctx.fillStyle=this.color;
       ctx.fillRect(this.x - width/2, this.y - height/2, width, height);
       ctx.fillStyle=(this.side==="player")?"white":"black";
-      ctx.font="24px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
+      ctx.font="48px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
       ctx.fillText(this.label,this.x,this.y);
-      hpBarY = this.y - height/2 - 10;
+      hpBarY = this.y - height/2 - 20;
     }else{
       ctx.fillStyle=this.color;
-      ctx.beginPath(); ctx.arc(this.x,this.y,12,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(this.x,this.y,24,0,Math.PI*2); ctx.fill();
       ctx.fillStyle=(this.side==="player")?"white":"black";
-      ctx.font="14px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
+      ctx.font="28px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
       ctx.fillText(this.label,this.x,this.y);
-      hpBarY = this.y - 20;
+      hpBarY = this.y - 40;
     }
 
     // ライフゲージ（左寄せ・最大HP比例）
     const bw = this.maxHp * HP_BAR_SCALE;
-    const bh = (this.role==="dragon") ? 6 : 4;
+    const bh = (this.role==="dragon") ? 12 : 8;
     const bx = this.lane * laneWidth + 2; // 少し左側にスペースを空ける
     const ratio = Math.max(0, Math.min(this.hp, this.maxHp)) / this.maxHp;
     ctx.fillStyle="black";
