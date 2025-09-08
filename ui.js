@@ -1,3 +1,10 @@
+// ---- バージョン管理 ----
+const VERSION = "0.2.28";
+const FULL_TITLE = `Chrono Bulward v${VERSION} (modular)`;
+document.title = FULL_TITLE;
+const titleEl = document.getElementById("titleText");
+if (titleEl) titleEl.textContent = FULL_TITLE;
+
 // ---- スライダー設定範囲 ----
 const unitConfig = {
   swordsman:{name:"ナイト", props:{hp:[50,300], atk:[5,30], speed:[0.1,1,0.05], range:[10,100]}},
