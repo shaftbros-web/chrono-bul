@@ -96,8 +96,8 @@ class Unit {
       else return;
     }
 
-    // 遠隔持ちは射程内に敵がいたら停止
-    if(this.role==="archer" || this.role==="healer" || this.role==="shaman" ||
+    // 遠隔持ちは射程内に敵がいたら停止（クレリックを除く）
+    if(this.role==="archer" || this.role==="shaman" ||
        this.role==="phantom" || this.role==="golem" || this.role==="dragon" ||
        this.role==="giantGolem"){
       let enemyList = (this.side==="player") ? enemyUnits : playerUnits;
