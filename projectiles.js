@@ -7,8 +7,8 @@ class Projectile{
       this.color=opts; this.shape="circle"; this.size=4;
     }else{
       const o=opts||{};
-      this.color=o.color||"white"; 
-      this.shape=o.shape||"circle"; 
+      this.color=o.color||"white";
+      this.shape=o.shape||"circle";
       this.size=o.size||4;
     }
     this.angle=0;
@@ -48,6 +48,21 @@ class Projectile{
       ctx.fillStyle = g;
       ctx.beginPath();
       ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    }else if(this.shape==="square"){
+      ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
+    }else if(this.shape==="rock"){
+      ctx.save();
+      ctx.translate(this.x,this.y);
+      ctx.beginPath();
+      ctx.moveTo(this.size*0.6,-this.size);
+      ctx.lineTo(this.size,-this.size*0.2);
+      ctx.lineTo(this.size*0.6,this.size);
+      ctx.lineTo(-this.size*0.6,this.size*0.8);
+      ctx.lineTo(-this.size,0);
+      ctx.lineTo(-this.size*0.4,-this.size*0.8);
+      ctx.closePath();
       ctx.fill();
       ctx.restore();
     }else{

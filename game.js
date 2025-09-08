@@ -223,7 +223,7 @@ function loop(){
           }
 
           if(p.role==="dragon" && inUnitRange(p,e) && p.cooldown<=0){
-            projectiles.push(new Projectile(p.x,p.y-12,e,p.atk,{shape:"fireball", color:"orange", size:10}));
+            projectiles.push(new Projectile(p.x,p.y-12,e,p.atk,{shape:"fireball", color:"orange", size:16}));
             p.cooldown=150;
           }
       }
@@ -244,31 +244,34 @@ function loop(){
     if(e.target && e.target.hp>0){
       // 戦闘中は移動・射撃なし
     }else{
-      if(e.role==="shaman" && e.cooldown<=0 && playerUnits.length>0){
+      if(e.role=="shaman" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
         if(inUnitRange(e,t)){
-          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"purple"));
+          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,{shape:"arrow", color:"blue", size:8}));
           e.cooldown=160;  // ★ 80 → 160
         }
       }
-      if(e.role==="phantom" && e.cooldown<=0 && playerUnits.length>0){
+      if(e.role=="phantom" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
         if(inUnitRange(e,t)){
-          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,"white"));
+          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,{color:"white", size:6}));
           e.cooldown=100;  // ★ 50 → 100
         }
       }
-      if(e.role==="golem" && e.cooldown<=0 && playerUnits.length>0){
+      if(e.role=="golem" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
         if(inUnitRange(e,t)){
-          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,{shape:"square", color:"brown"}));
+          const opts = (e.type === "giantGolem")
+            ? {shape:"rock", color:"gray", size:14}
+            : {shape:"square", color:"brown", size:8};
+          projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,opts));
           e.cooldown=200;  // ★ 100 → 200
         }
       }
         if(e.role==="dragon" && e.cooldown<=0 && playerUnits.length>0){
           const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
           if(inUnitRange(e,t)){
-            projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,{shape:"fireball", color:"orange", size:10}));
+            projectiles.push(new Projectile(e.x,e.y+12,t,e.atk,{shape:"fireball", color:"orange", size:16}));
             e.cooldown=150;
           }
         }
