@@ -16,6 +16,9 @@ let unitStats = {
   dragon:{hp:2500, atk:50, meleeAtk:80, speed:0.1, range:250}       // 邪竜
 };
 
+// ライフゲージの1HPあたりの幅
+const HP_BAR_SCALE = 0.2;
+
 // =====================
 // ユニットクラス
 // =====================
@@ -55,6 +58,9 @@ class Unit {
 
   draw(){
     const barColor = (this.side==="player")?"lime":"red";
+    const laneWidth = canvas.width / LANES;
+    let hpBarY;
+
     if(this.role==="dragon"){
       const width = canvas.width * (3/LANES);
       const height = 60;
@@ -63,35 +69,25 @@ class Unit {
       ctx.fillStyle=(this.side==="player")?"white":"black";
       ctx.font="24px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
       ctx.fillText(this.label,this.x,this.y);
-
-      // ライフゲージ
-      const bw = width;
-      const bh = 6;
-      const bx = this.x - bw/2;
-      const by = this.y - height/2 - 10;
-      ctx.fillStyle="black";
-      ctx.fillRect(bx, by, bw, bh);
-      const ratio = Math.max(0, Math.min(this.hp, this.maxHp)) / this.maxHp;
-      ctx.fillStyle = barColor;
-      ctx.fillRect(bx, by, bw * ratio, bh);
+      hpBarY = this.y - height/2 - 10;
     }else{
       ctx.fillStyle=this.color;
       ctx.beginPath(); ctx.arc(this.x,this.y,12,0,Math.PI*2); ctx.fill();
       ctx.fillStyle=(this.side==="player")?"white":"black";
       ctx.font="14px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
       ctx.fillText(this.label,this.x,this.y);
-
-      // ライフゲージ
-      const bw = 24;
-      const bh = 4;
-      const bx = this.x - bw/2;
-      const by = this.y - 20;
-      ctx.fillStyle="black";
-      ctx.fillRect(bx, by, bw, bh);
-      const ratio = Math.max(0, Math.min(this.hp, this.maxHp)) / this.maxHp;
-      ctx.fillStyle = barColor;
-      ctx.fillRect(bx, by, bw * ratio, bh);
+      hpBarY = this.y - 20;
     }
+
+    // ライフゲージ（左寄せ・最大HP比例）
+    const bw = this.maxHp * HP_BAR_SCALE;
+    const bh = (this.role==="dragon") ? 6 : 4;
+    const bx = this.lane * laneWidth;
+    const ratio = Math.max(0, Math.min(this.hp, this.maxHp)) / this.maxHp;
+    ctx.fillStyle="black";
+    ctx.fillRect(bx, hpBarY, bw, bh);
+    ctx.fillStyle = barColor;
+    ctx.fillRect(bx, hpBarY, bw * ratio, bh);
   }
 
   update(){
