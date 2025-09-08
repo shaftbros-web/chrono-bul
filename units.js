@@ -27,6 +27,7 @@ class Unit {
     this.y = y;
     const st = unitStats[type];
     this.hp=st.hp; this.atk=st.atk;
+    this.maxHp = st.hp; // ライフゲージ用に最大HPを保持
     this.meleeAtk = (st.meleeAtk !== undefined) ? st.meleeAtk : st.atk;
     this.speed=st.speed||0.2;
     this.range=st.range||25;
@@ -53,6 +54,7 @@ class Unit {
   }
 
   draw(){
+    const barColor = (this.side==="player")?"lime":"red";
     if(this.role==="dragon"){
       const width = canvas.width * (3/LANES);
       const height = 60;
@@ -61,12 +63,34 @@ class Unit {
       ctx.fillStyle=(this.side==="player")?"white":"black";
       ctx.font="24px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
       ctx.fillText(this.label,this.x,this.y);
+
+      // ライフゲージ
+      const bw = width;
+      const bh = 6;
+      const bx = this.x - bw/2;
+      const by = this.y - height/2 - 10;
+      ctx.fillStyle="black";
+      ctx.fillRect(bx, by, bw, bh);
+      const ratio = Math.max(0, Math.min(this.hp, this.maxHp)) / this.maxHp;
+      ctx.fillStyle = barColor;
+      ctx.fillRect(bx, by, bw * ratio, bh);
     }else{
       ctx.fillStyle=this.color;
       ctx.beginPath(); ctx.arc(this.x,this.y,12,0,Math.PI*2); ctx.fill();
       ctx.fillStyle=(this.side==="player")?"white":"black";
       ctx.font="14px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
       ctx.fillText(this.label,this.x,this.y);
+
+      // ライフゲージ
+      const bw = 24;
+      const bh = 4;
+      const bx = this.x - bw/2;
+      const by = this.y - 20;
+      ctx.fillStyle="black";
+      ctx.fillRect(bx, by, bw, bh);
+      const ratio = Math.max(0, Math.min(this.hp, this.maxHp)) / this.maxHp;
+      ctx.fillStyle = barColor;
+      ctx.fillRect(bx, by, bw * ratio, bh);
     }
   }
 
