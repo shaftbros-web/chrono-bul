@@ -93,9 +93,10 @@ function toggleSpeed(){
 }
 
 function startGame(){
-  canvas = document.getElementById("gameCanvas");
-  ctx = canvas.getContext("2d");
-  canvas.style.touchAction = "none";
+    canvas = document.getElementById("gameCanvas");
+    ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
+    canvas.style.touchAction = "none";
 
   document.getElementById("menu").style.display="none";
   document.getElementById("settings").style.display="none";
