@@ -159,8 +159,9 @@ class ExpandingEffectZone{
     }else if(this.type==="meteor"){
       for(const e of enemyUnits){
         if(!this.affected.has(e) && Math.hypot(e.x-this.x,e.y-this.y)<=this.radius){
-          e.hp -= 200*this.multiplier;
-          floatingTexts.push(new FloatingText(e.x,e.y-15,`-${200*this.multiplier}`));
+          const dmg = Math.round(200*this.multiplier);
+          e.hp -= dmg;
+          floatingTexts.push(new FloatingText(e.x,e.y-15,`-${dmg}`));
           this.affected.add(e);
         }
       }
