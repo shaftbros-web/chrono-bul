@@ -23,7 +23,7 @@ const HP_BAR_SCALE = 0.4;
 // ドラクエ風スプライト定義
 // =====================
 // 0:透明 1:輪郭 2:体色 3:差し色/肌色
-const SPRITES = {
+const SPRITE_PATTERNS = {
   swordsman: [
     "0001111000",
     "0013333100",
@@ -146,6 +146,18 @@ const SPRITES = {
   ]
 };
 
+// 各パターンからアニメーション用のフレーム配列を作成
+const SPRITES = {};
+for(const [name, pattern] of Object.entries(SPRITE_PATTERNS)){
+  SPRITES[name] = {
+    frames: {
+      idle: [pattern],
+      walk: [pattern],
+      attack: [pattern]
+    }
+  };
+}
+
 // カラーパレット（味方/敵）
 const PALETTES = {
   swordsman: {
@@ -190,8 +202,9 @@ const PALETTES = {
   }
 };
 
-function drawDQSprite(type, side, x, y, scale = 2){
-  const pattern = SPRITES[type];
+function drawDQSprite(type, side, x, y, scale = 2, action = "idle", frame = 0){
+  const frames = SPRITES[type].frames[action] || SPRITES[type].frames["idle"];
+  const pattern = frames[frame % frames.length];
   const colors = PALETTES[type][side];
   const h = pattern.length;
   const w = pattern[0].length;
@@ -227,6 +240,12 @@ class Unit {
     this.speed=st.speed||0.2;
     this.range=st.range||25;
 
+    // アニメーション関連
+    this.action = "idle";      // 現在の動作
+    this.currentFrame = 0;      // 表示中のフレーム番号
+    this.animTimer = 0;         // フレーム切り替え用タイマー
+    this.frameInterval = 12;    // フレームの切り替え間隔
+
     this.role = "melee";
     if(type==="archer") this.role="archer";
     if(type==="healer") this.role="healer";
@@ -242,7 +261,7 @@ class Unit {
     const barColor = (this.side==="player")?"lime":"red";
     const laneWidth = canvas.width / LANES;
     const scale = (this.role==="dragon"||this.role==="golem"||this.role==="giantGolem") ? 4 : 2;
-    const size = drawDQSprite(this.type, this.side, this.x, this.y, scale);
+    const size = drawDQSprite(this.type, this.side, this.x, this.y, scale, this.action, this.currentFrame);
     const hpBarY = this.y - size.height/2 - 6;
 
     // ライフゲージ（左寄せ・最大HP比例）
@@ -257,24 +276,44 @@ class Unit {
   }
 
   update(){
+    let newAction = "walk";
+
     if(this.target){
-      if(this.target.hp<=0 || !inMeleeRange(this,this.target)) this.target=null;
-      else return;
+      if(this.target.hp<=0 || !inMeleeRange(this,this.target)) {
+        this.target=null;
+      } else {
+        newAction = "attack";
+      }
     }
 
-    // 遠隔持ちは射程内に敵がいたら停止（クレリックを除く）
-    if(this.role==="archer" || this.role==="shaman" ||
+    if(newAction !== "attack" && (this.role==="archer" || this.role==="shaman" ||
        this.role==="phantom" || this.role==="golem" || this.role==="dragon" ||
-       this.role==="giantGolem"){
+       this.role==="giantGolem")){
       let enemyList = (this.side==="player") ? enemyUnits : playerUnits;
       for(const e of enemyList){
         if(inUnitRange(this,e)){
-          return;
+          newAction = "attack";
+          break;
         }
       }
     }
 
-    this.y += (this.side==="player" ? -this.speed : this.speed) * gameSpeed;
+    if(newAction === "walk"){
+      this.y += (this.side==="player" ? -this.speed : this.speed) * gameSpeed;
+    }
+
+    if(this.action !== newAction){
+      this.action = newAction;
+      this.currentFrame = 0;
+      this.animTimer = 0;
+    } else {
+      this.animTimer += gameSpeed;
+      const frames = SPRITES[this.type].frames[this.action];
+      if(this.animTimer >= this.frameInterval){
+        this.currentFrame = (this.currentFrame + 1) % frames.length;
+        this.animTimer = 0;
+      }
+    }
   }
 }
 
