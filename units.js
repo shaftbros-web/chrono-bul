@@ -20,6 +20,57 @@ let unitStats = {
 const HP_BAR_SCALE = 0.4;
 
 // =====================
+// ドラクエ風スプライト定義
+// =====================
+// 0:透明 1:輪郭 2:体色(側で変化) 3:肌色
+const SPRITES = {
+  player: [
+    "0001111000",
+    "0013333100",
+    "0132222310",
+    "0132222310",
+    "0132222310",
+    "0013333100",
+    "0011111100",
+    "0110000110",
+    "0110000110",
+    "0011001100"
+  ],
+  enemy: [
+    "0000000000",
+    "0001111000",
+    "0012222100",
+    "0122222210",
+    "0122222210",
+    "0122222210",
+    "0012222100",
+    "0001111000",
+    "0000000000"
+  ]
+};
+
+function drawDQSprite(side, x, y, scale = 2){
+  const pattern = SPRITES[side];
+  const h = pattern.length;
+  const w = pattern[0].length;
+  const startX = x - (w * scale) / 2;
+  const startY = y - (h * scale) / 2;
+  const primary = (side === "player") ? "#3b5dc9" : "#b22222";
+  const palette = { "0": null, "1": "#000", "2": primary, "3": "#ffe0b3" };
+  for(let j=0;j<h;j++){
+    for(let i=0;i<w;i++){
+      const code = pattern[j][i];
+      const color = palette[code];
+      if(color){
+        ctx.fillStyle = color;
+        ctx.fillRect(startX + i*scale, startY + j*scale, scale, scale);
+      }
+    }
+  }
+  return { width: w * scale, height: h * scale };
+}
+
+// =====================
 // ユニットクラス
 // =====================
 class Unit {
@@ -43,45 +94,19 @@ class Unit {
     if(type==="golem" || type==="giantGolem") this.role="golem";
     if(type==="dragon") this.role="dragon";
 
-    this.color = (side==="player") ?
-      (type==="archer"?"cyan":type==="healer"?"green":"blue") : "red";
-
-    const nameMap={
-      swordsman:"ナ", archer:"弓", healer:"聖",
-      goblin:"ゴ", orc:"オ", shaman:"シ",
-      phantom:"フ", golem:"ゴレ",
-      giantGolem:"巨", dragon:"竜"
-    };
-    this.label = nameMap[type]||"?";
     this.target=null; this.cooldown=0;
   }
 
   draw(){
     const barColor = (this.side==="player")?"lime":"red";
     const laneWidth = canvas.width / LANES;
-    let hpBarY;
-
-    if(this.role==="dragon"){
-      const width = Math.min(canvas.width, canvas.width * (3/LANES));
-      const height = 90;
-      ctx.fillStyle=this.color;
-      ctx.fillRect(this.x - width/2, this.y - height/2, width, height);
-      ctx.fillStyle=(this.side==="player")?"white":"black";
-      ctx.font="36px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
-      ctx.fillText(this.label,this.x,this.y);
-      hpBarY = this.y - height/2 - 15;
-    }else{
-      ctx.fillStyle=this.color;
-      ctx.beginPath(); ctx.arc(this.x,this.y,14,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle=(this.side==="player")?"white":"black";
-      ctx.font="21px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
-      ctx.fillText(this.label,this.x,this.y);
-      hpBarY = this.y - 26;
-    }
+    const scale = (this.role==="dragon"||this.role==="golem"||this.role==="giantGolem") ? 4 : 2;
+    const size = drawDQSprite(this.side, this.x, this.y, scale);
+    const hpBarY = this.y - size.height/2 - 6;
 
     // ライフゲージ（左寄せ・最大HP比例）
     const bw = this.maxHp * HP_BAR_SCALE;
-    const bh = (this.role==="dragon") ? 9 : 6;
+    const bh = 6;
     const bx = this.lane * laneWidth + 2; // 少し左側にスペースを空ける
     const ratio = Math.max(0, Math.min(this.hp, this.maxHp)) / this.maxHp;
     ctx.fillStyle="black";
