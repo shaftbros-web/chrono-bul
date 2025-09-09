@@ -23,7 +23,8 @@ const HP_BAR_SCALE = 0.4;
 // ドラクエ風スプライト定義
 // =====================
 // 0:透明 1:輪郭 2:体色 3:差し色/肌色
-const SPRITE_PATTERNS = {
+
+const PLAYER_SPRITE_PATTERNS = {
   swordsman: [
     "0001111000",
     "0013333100",
@@ -146,16 +147,27 @@ const SPRITE_PATTERNS = {
   ]
 };
 
+// 味方パターンから敵パターン（左右反転）を生成
+const SPRITE_PATTERNS = {};
+for(const [name, player] of Object.entries(PLAYER_SPRITE_PATTERNS)){
+  const enemy = player.map(row => row.split('').reverse().join(""));
+  SPRITE_PATTERNS[name] = { player, enemy };
+}
+
 // 各パターンからアニメーション用のフレーム配列を作成
 const SPRITES = {};
-for(const [name, pattern] of Object.entries(SPRITE_PATTERNS)){
-  SPRITES[name] = {
-    frames: {
-      idle: [pattern],
-      walk: [pattern],
-      attack: [pattern]
-    }
-  };
+for(const [name, patterns] of Object.entries(SPRITE_PATTERNS)){
+  SPRITES[name] = {};
+  for(const side of ["player","enemy"]){
+    const pattern = patterns[side];
+    SPRITES[name][side] = {
+      frames: {
+        idle: [pattern],
+        walk: [pattern],
+        attack: [pattern]
+      }
+    };
+  }
 }
 
 // カラーパレット（味方/敵）
@@ -203,7 +215,7 @@ const PALETTES = {
 };
 
 function drawDQSprite(type, side, x, y, scale = 2, action = "idle", frame = 0){
-  const frames = SPRITES[type].frames[action] || SPRITES[type].frames["idle"];
+  const frames = SPRITES[type][side].frames[action] || SPRITES[type][side].frames["idle"];
   const pattern = frames[frame % frames.length];
   const colors = PALETTES[type][side];
   const h = pattern.length;
@@ -308,7 +320,7 @@ class Unit {
       this.animTimer = 0;
     } else {
       this.animTimer += gameSpeed;
-      const frames = SPRITES[this.type].frames[this.action];
+      const frames = SPRITES[this.type][this.side].frames[this.action];
       if(this.animTimer >= this.frameInterval){
         this.currentFrame = (this.currentFrame + 1) % frames.length;
         this.animTimer = 0;
