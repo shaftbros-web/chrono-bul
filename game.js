@@ -185,7 +185,7 @@ function updateManaUI(type){
 
   if(manaCharges[type] >= 1){
     btn.disabled = false;
-    btn.textContent = `発動 ✕${manaCharges[type]}`;
+    btn.textContent = "発動";
   } else {
     btn.disabled = true;
     btn.textContent = "発動";
