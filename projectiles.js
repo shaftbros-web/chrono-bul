@@ -107,8 +107,8 @@ class HealMark{ constructor(x,y){ this.x=x; this.y=y; this.life=15; } update(){ 
   draw(){ ctx.strokeStyle="lime"; ctx.lineWidth=4.5; ctx.beginPath(); ctx.arc(this.x,this.y,21,0,Math.PI*2); ctx.stroke(); ctx.lineWidth=1.5; } }
 class SwingMark{ constructor(x,y,side){ this.x=x; this.y=y; this.life=12; this.side=side; } update(){ this.life-=gameSpeed; }
   draw(){ ctx.save(); ctx.lineWidth=4.5; ctx.strokeStyle=(this.side==="player")?"#88f":"#f88";
-         ctx.beginPath(); ctx.arc(this.x,this.y,24,-Math.PI/3,0); ctx.stroke();
-         ctx.beginPath(); ctx.arc(this.x,this.y,18,0,Math.PI/3); ctx.stroke(); ctx.restore(); } }
+         ctx.beginPath(); ctx.arc(this.x,this.y,20,-Math.PI/3,0); ctx.stroke();
+         ctx.beginPath(); ctx.arc(this.x,this.y,14,0,Math.PI/3); ctx.stroke(); ctx.restore(); } }
 
 // 特殊攻撃の範囲エフェクト
 const SPECIAL_CIRCLE_LINE_WIDTH = 15;
