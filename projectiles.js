@@ -114,13 +114,13 @@ class SwingMark{ constructor(x,y,side){ this.x=x; this.y=y; this.life=12; this.s
 const SPECIAL_CIRCLE_LINE_WIDTH = 15;
 
 class SpecialCircle{
-  constructor(x,y,color){
+  constructor(x,y,color,maxRadius=140){
     this.x=x; this.y=y; this.color=color;
-    this.radius=0; this.active=true; this.count=0;
+    this.radius=0; this.active=true; this.count=0; this.maxRadius=maxRadius;
   }
   update(){
     this.radius += 8*gameSpeed;
-    if(this.radius > 140){
+    if(this.radius > this.maxRadius){
       this.count++;
       if(this.count>=3) this.active=false;
       else this.radius=0;

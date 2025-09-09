@@ -51,6 +51,12 @@ function inUnitRange(a,b){
 
 // マナ変数の定義
 let mana = { freeze:0, meteor:0, heal:0 };
+let manaCharges = { freeze:0, meteor:0, heal:0 };
+const manaRegenRates = {
+  freeze: [0.167, 0.0835],
+  meteor: [0.0625, 0.03125],
+  heal: [0.1, 0.05]
+};
 const maxMana = { freeze:100, meteor:150, heal:120 };
 
 // ゴールドとコスト設定
@@ -110,6 +116,9 @@ function startGame(){
   playerBaseHP=100; enemyBaseHP=100;
   playerUnits=[]; enemyUnits=[]; projectiles=[]; hitMarks=[]; swingMarks=[]; specialEffects=[]; floatingTexts=[];
   pendingSpecial = null;
+  mana = { freeze:0, meteor:0, heal:0 };
+  manaCharges = { freeze:0, meteor:0, heal:0 };
+  ["freeze","meteor","heal"].forEach(updateManaUI);
   playerGold = 500;
   updateGoldUI();
   if(enemySpawnTimer) clearInterval(enemySpawnTimer);
@@ -161,12 +170,18 @@ function updateManaUI(type){
 
   bar.value = mana[type];
 
-  if(mana[type] >= maxMana[type]){
-    btn.disabled = false;
+  if(manaCharges[type] >= 2){
     bar.classList.add("mana-full");
   } else {
-    btn.disabled = true;
     bar.classList.remove("mana-full");
+  }
+
+  if(manaCharges[type] >= 1){
+    btn.disabled = false;
+    btn.textContent = `発動 ✕${manaCharges[type]}`;
+  } else {
+    btn.disabled = true;
+    btn.textContent = "発動";
   }
 }
 
@@ -320,14 +335,22 @@ function loop(){
   enemyUnits = enemyUnits.filter(e=>e.hp>0 && e.y<canvas.height);
   playerUnits = playerUnits.filter(u=>u.hp>0 && u.y>0);
 
-// === マナ自動回復 ===
-mana.freeze = Math.min(maxMana.freeze, mana.freeze + 0.167 * gameSpeed);  // 10秒でMAX
-mana.meteor = Math.min(maxMana.meteor, mana.meteor + 0.0625 * gameSpeed); // 40秒でMAX
-mana.heal   = Math.min(maxMana.heal,   mana.heal   + 0.1 * gameSpeed);    // 20秒でMAX
-
-updateManaUI("freeze");
-updateManaUI("meteor");
-updateManaUI("heal");
+  // === マナ自動回復 ===
+  for(const type of ['freeze','meteor','heal']){
+    if(manaCharges[type] < 2){
+      const rate = manaRegenRates[type][manaCharges[type]];
+      mana[type] = Math.min(maxMana[type], mana[type] + rate * gameSpeed);
+      if(mana[type] >= maxMana[type]){
+        if(manaCharges[type] === 0){
+          mana[type] = 0;
+          manaCharges[type] = 1;
+        }else{
+          manaCharges[type] = 2;
+        }
+      }
+    }
+    updateManaUI(type);
+  }
 
   
   if(playerBaseHP<=0){ endScreen("GAME OVER","red"); return; }
@@ -354,7 +377,7 @@ function endScreen(text,color){
 function chooseUnit(type){ pendingUnitType=type; }
 
 function useSpecial(type){
-  if(mana[type] >= maxMana[type]){
+  if(manaCharges[type] >= 1){
     pendingSpecial = type;
     document.querySelectorAll('.special-btn').forEach(btn => btn.classList.remove('selected'));
     const btn = document.getElementById(type + 'Btn');
@@ -363,7 +386,9 @@ function useSpecial(type){
 }
 
 function triggerSpecial(type,x,y){
-  const radius = 140;
+  const multiplier = (manaCharges[type] === 2) ? 2 : 1;
+  const radius = 140 * multiplier;
+
   if(type === "freeze"){
     const affected=[];
     for(const e of enemyUnits){
@@ -377,38 +402,36 @@ function triggerSpecial(type,x,y){
       for(const e of affected){
         if(e.speedBackup !== undefined){ e.speed = e.speedBackup; delete e.speedBackup; }
       }
-    },5000);
-    mana.freeze = 0;
-    specialEffects.push(new SpecialCircle(x,y,"gray"));
+    },5000 * multiplier);
+    specialEffects.push(new SpecialCircle(x,y,"gray",radius));
     specialEffects.push(new SpecialText("❄️ フリーズ！！"));
-    updateManaUI("freeze");
   }
 
   if(type === "meteor"){
     for(const e of enemyUnits){
       if(Math.hypot(e.x - x, e.y - y) <= radius){
-        e.hp -= 200;
-        floatingTexts.push(new FloatingText(e.x, e.y-15, `-200`));
+        e.hp -= 200 * multiplier;
+        floatingTexts.push(new FloatingText(e.x, e.y-15, `-${200 * multiplier}`));
       }
     }
-    mana.meteor = 0;
-    specialEffects.push(new SpecialCircle(x,y,"red"));
+    specialEffects.push(new SpecialCircle(x,y,"red",radius));
     specialEffects.push(new SpecialText("☄️ メテオ！！"));
-    updateManaUI("meteor");
   }
 
   if(type === "heal"){
     for(const p of playerUnits){
       if(Math.hypot(p.x - x, p.y - y) <= radius){
-        p.hp += 100;
-        floatingTexts.push(new FloatingText(p.x, p.y-15, `+100`, "green"));
+        p.hp += 100 * multiplier;
+        floatingTexts.push(new FloatingText(p.x, p.y-15, `+${100 * multiplier}`, "green"));
       }
     }
-    mana.heal = 0;
-    specialEffects.push(new SpecialCircle(x,y,"green"));
+    specialEffects.push(new SpecialCircle(x,y,"green",radius));
     specialEffects.push(new SpecialText("✨ ヒーリング！！"));
-    updateManaUI("heal");
   }
+
+  mana[type] = 0;
+  manaCharges[type] = 0;
+  updateManaUI(type);
 }
 
 
