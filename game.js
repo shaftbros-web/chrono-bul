@@ -210,10 +210,24 @@ function updateGoldUI(){
     btn.disabled = playerGold < unitCosts[type];
   });
 }
-
+function drawBackground(){
+  const w = canvas.width;
+  const h = canvas.height;
+  const sky = ctx.createLinearGradient(0,0,0,h*0.4);
+  sky.addColorStop(0,"#87CEEB");
+  sky.addColorStop(1,"#B0E0E6");
+  ctx.fillStyle = sky;
+  ctx.fillRect(0,0,w,h*0.4);
+  const ground = ctx.createLinearGradient(0,h*0.4,0,h);
+  ground.addColorStop(0,"#228B22");
+  ground.addColorStop(1,"#006400");
+  ctx.fillStyle = ground;
+  ctx.fillRect(0,h*0.4,w,h*0.6);
+}
 
 function loop(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawBackground();
   ctx.strokeStyle="#555";
   for(let i=1;i<LANES;i++){
     ctx.beginPath(); ctx.moveTo(i*canvas.width/LANES,0); ctx.lineTo(i*canvas.width/LANES,canvas.height); ctx.stroke();
