@@ -166,35 +166,35 @@ const PALETTES = {
   },
   archer: {
     player: { primary: "#8b4513", secondary: "#ffe0b3" },
-    enemy:  { primary: "#556b2f", secondary: "#ffe0b3" }
+    enemy:  { primary: "#006400", secondary: "#adff2f" }
   },
   healer: {
-    player: { primary: "#ffffff", secondary: "#ffe0b3" },
-    enemy:  { primary: "#dddddd", secondary: "#ffe0b3" }
+    player: { primary: "#ffffff", secondary: "#00bfff" },
+    enemy:  { primary: "#8b0000", secondary: "#ffa07a" }
   },
   goblin: {
     player: { primary: "#3cb043", secondary: "#9acd32" },
-    enemy:  { primary: "#006400", secondary: "#556b2f" }
+    enemy:  { primary: "#8b0000", secondary: "#ff4500" }
   },
   orc: {
     player: { primary: "#556b2f", secondary: "#8fbc8f" },
-    enemy:  { primary: "#8b0000", secondary: "#a52a2a" }
+    enemy:  { primary: "#8b0000", secondary: "#ffa500" }
   },
   shaman: {
     player: { primary: "#800080", secondary: "#ffe0b3" },
-    enemy:  { primary: "#4b0082", secondary: "#ffe0b3" }
+    enemy:  { primary: "#008080", secondary: "#f0e68c" }
   },
   phantom: {
-    player: { primary: "#aaaaaa", secondary: "#ffffff" },
-    enemy:  { primary: "#666666", secondary: "#cccccc" }
+    player: { primary: "#e0e0e0", secondary: "#ffffff" },
+    enemy:  { primary: "#4b0082", secondary: "#dda0dd" }
   },
   golem: {
     player: { primary: "#a0522d", secondary: "#cd853f" },
-    enemy:  { primary: "#708090", secondary: "#a9a9a9" }
+    enemy:  { primary: "#2f4f4f", secondary: "#87ceeb" }
   },
   giantGolem: {
     player: { primary: "#a0522d", secondary: "#cd853f" },
-    enemy:  { primary: "#8b4513", secondary: "#a0522d" }
+    enemy:  { primary: "#4682b4", secondary: "#87ceeb" }
   },
   dragon: {
     player: { primary: "#daa520", secondary: "#ffdead" },
