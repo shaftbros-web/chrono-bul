@@ -182,6 +182,7 @@ function updateManaUI(type){
 
   bar1.classList.toggle("mana-full", manaCharges[type] >= 1);
   bar2.classList.toggle("mana-full", manaCharges[type] >= 2);
+  btn.classList.toggle("ready", manaCharges[type] >= 1);
 
   if(manaCharges[type] >= 1){
     btn.disabled = false;
