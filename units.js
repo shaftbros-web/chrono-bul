@@ -62,7 +62,7 @@ class Unit {
     let hpBarY;
 
     if(this.role==="dragon"){
-      const width = Math.min(canvas.width, canvas.width * (4.5/LANES));
+      const width = Math.min(canvas.width, canvas.width * (3/LANES));
       const height = 90;
       ctx.fillStyle=this.color;
       ctx.fillRect(this.x - width/2, this.y - height/2, width, height);
