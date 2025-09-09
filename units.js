@@ -22,9 +22,9 @@ const HP_BAR_SCALE = 0.4;
 // =====================
 // ドラクエ風スプライト定義
 // =====================
-// 0:透明 1:輪郭 2:体色(側で変化) 3:肌色
+// 0:透明 1:輪郭 2:体色 3:差し色/肌色
 const SPRITES = {
-  player: [
+  swordsman: [
     "0001111000",
     "0013333100",
     "0132222310",
@@ -36,27 +36,168 @@ const SPRITES = {
     "0110000110",
     "0011001100"
   ],
-  enemy: [
-    "0000000000",
+  archer: [
+    "0001111000",
+    "0013333100",
+    "0132222311",
+    "0132222311",
+    "0132222311",
+    "0013333100",
+    "0011111100",
+    "0110000110",
+    "0110000110",
+    "0011001100"
+  ],
+  healer: [
+    "0001111000",
+    "0013333100",
+    "0132122310",
+    "0131111310",
+    "0132122310",
+    "0013333100",
+    "0011111100",
+    "0110000110",
+    "0110000110",
+    "0011001100"
+  ],
+  goblin: [
+    "0110001100",
+    "0111111100",
+    "0133333310",
+    "0132222310",
+    "0132222310",
+    "0132222310",
+    "0013333100",
+    "0011111100",
+    "0110000110",
+    "0011001100"
+  ],
+  orc: [
+    "0011111100",
+    "0133333310",
+    "1322222231",
+    "1322222231",
+    "1322222231",
+    "1322222231",
+    "0133333310",
+    "0011111100",
+    "0110000110",
+    "0110000110"
+  ],
+  shaman: [
+    "1110001100",
+    "1111111100",
+    "1133333310",
+    "1132222310",
+    "1132222310",
+    "1132222310",
+    "1113333100",
+    "1111111100",
+    "1110000110",
+    "1111001100"
+  ],
+  phantom: [
     "0001111000",
     "0012222100",
     "0122222210",
     "0122222210",
     "0122222210",
-    "0012222100",
-    "0001111000",
-    "0000000000"
+    "0122222210",
+    "0122222210",
+    "0122222210",
+    "0012122100",
+    "0001210000"
+  ],
+  golem: [
+    "0111111110",
+    "0122222210",
+    "0122222210",
+    "0122222210",
+    "0122222210",
+    "0122222210",
+    "0122222210",
+    "0122222210",
+    "0122222210",
+    "0111111110"
+  ],
+  giantGolem: [
+    "1111111111",
+    "1122222211",
+    "1122222211",
+    "1122222211",
+    "1122222211",
+    "1122222211",
+    "1122222211",
+    "1122222211",
+    "1122222211",
+    "1111111111"
+  ],
+  dragon: [
+    "0001110000",
+    "0012221000",
+    "0122222100",
+    "0122222210",
+    "0012222211",
+    "0001222210",
+    "0001222210",
+    "0011222210",
+    "0110000010",
+    "0011001100"
   ]
 };
 
-function drawDQSprite(side, x, y, scale = 2){
-  const pattern = SPRITES[side];
+// カラーパレット（味方/敵）
+const PALETTES = {
+  swordsman: {
+    player: { primary: "#3b5dc9", secondary: "#ffe0b3" },
+    enemy:  { primary: "#b22222", secondary: "#ffe0b3" }
+  },
+  archer: {
+    player: { primary: "#8b4513", secondary: "#ffe0b3" },
+    enemy:  { primary: "#556b2f", secondary: "#ffe0b3" }
+  },
+  healer: {
+    player: { primary: "#ffffff", secondary: "#ffe0b3" },
+    enemy:  { primary: "#dddddd", secondary: "#ffe0b3" }
+  },
+  goblin: {
+    player: { primary: "#3cb043", secondary: "#9acd32" },
+    enemy:  { primary: "#006400", secondary: "#556b2f" }
+  },
+  orc: {
+    player: { primary: "#556b2f", secondary: "#8fbc8f" },
+    enemy:  { primary: "#8b0000", secondary: "#a52a2a" }
+  },
+  shaman: {
+    player: { primary: "#800080", secondary: "#ffe0b3" },
+    enemy:  { primary: "#4b0082", secondary: "#ffe0b3" }
+  },
+  phantom: {
+    player: { primary: "#aaaaaa", secondary: "#ffffff" },
+    enemy:  { primary: "#666666", secondary: "#cccccc" }
+  },
+  golem: {
+    player: { primary: "#a0522d", secondary: "#cd853f" },
+    enemy:  { primary: "#708090", secondary: "#a9a9a9" }
+  },
+  giantGolem: {
+    player: { primary: "#a0522d", secondary: "#cd853f" },
+    enemy:  { primary: "#8b4513", secondary: "#a0522d" }
+  },
+  dragon: {
+    player: { primary: "#daa520", secondary: "#ffdead" },
+    enemy:  { primary: "#8b0000", secondary: "#ff4500" }
+  }
+};
+
+function drawDQSprite(type, side, x, y, scale = 2){
+  const pattern = SPRITES[type];
+  const colors = PALETTES[type][side];
   const h = pattern.length;
   const w = pattern[0].length;
   const startX = x - (w * scale) / 2;
   const startY = y - (h * scale) / 2;
-  const primary = (side === "player") ? "#3b5dc9" : "#b22222";
-  const palette = { "0": null, "1": "#000", "2": primary, "3": "#ffe0b3" };
+  const palette = { "0": null, "1": "#000", "2": colors.primary, "3": colors.secondary };
   for(let j=0;j<h;j++){
     for(let i=0;i<w;i++){
       const code = pattern[j][i];
@@ -101,7 +242,7 @@ class Unit {
     const barColor = (this.side==="player")?"lime":"red";
     const laneWidth = canvas.width / LANES;
     const scale = (this.role==="dragon"||this.role==="golem"||this.role==="giantGolem") ? 4 : 2;
-    const size = drawDQSprite(this.side, this.x, this.y, scale);
+    const size = drawDQSprite(this.type, this.side, this.x, this.y, scale);
     const hpBarY = this.y - size.height/2 - 6;
 
     // ライフゲージ（左寄せ・最大HP比例）
