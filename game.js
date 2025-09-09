@@ -172,12 +172,15 @@ function updateManaUI(type){
   if(manaCharges[type] === 0){
     bar1.value = mana[type];
     bar2.value = 0;
+    bar2.style.display = "none";
   } else if(manaCharges[type] === 1){
     bar1.value = maxMana[type];
     bar2.value = mana[type];
+    bar2.style.display = "block";
   } else {
     bar1.value = maxMana[type];
     bar2.value = maxMana[type];
+    bar2.style.display = "block";
   }
 
   bar1.classList.toggle("mana-full", manaCharges[type] >= 1);

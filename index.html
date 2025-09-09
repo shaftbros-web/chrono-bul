@@ -88,6 +88,16 @@
   #healBar1::-webkit-progress-value, #healBar2::-webkit-progress-value { background: green; }
   #healBar1::-moz-progress-bar, #healBar2::-moz-progress-bar { background: green; }
 
+  /* 2段目の未充填部分が1段目の色を隠さないように透過 */
+  #freezeBar2, #meteorBar2, #healBar2 {
+    background: transparent;
+  }
+  #freezeBar2::-webkit-progress-bar,
+  #meteorBar2::-webkit-progress-bar,
+  #healBar2::-webkit-progress-bar {
+    background: transparent;
+  }
+
   .mana-bars {
     position: relative;
     display: inline-block;
