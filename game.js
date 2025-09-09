@@ -218,12 +218,12 @@ function loop(){
       }else{
 
           if(p.role==="archer" && inUnitRange(p,e) && p.cooldown<=0){
-            projectiles.push(new Projectile(p.x,p.y-18,e,p.atk,{shape:"arrow", color:"white", size:12}));
+            projectiles.push(new Projectile(p.x,p.y-14,e,p.atk,{shape:"arrow", color:"white", size:12}));
             p.cooldown=120;  // ★ 60 → 120
           }
 
           if(p.role==="dragon" && inUnitRange(p,e) && p.cooldown<=0){
-            projectiles.push(new Projectile(p.x,p.y-18,e,p.atk,{shape:"fireball", color:"orange", size:24}));
+            projectiles.push(new Projectile(p.x,p.y-14,e,p.atk,{shape:"fireball", color:"orange", size:24}));
             p.cooldown=150;
           }
       }
@@ -231,7 +231,7 @@ function loop(){
     if(p.role==="healer" && p.cooldown<=0){
       for(const ally of playerUnits){
         if(ally!==p && ally.hp>0 && ally.hp<unitStats[ally.type].hp && inUnitRange(p,ally)){
-          projectiles.push(new HealProjectile(p.x,p.y-18,ally,p.atk));
+          projectiles.push(new HealProjectile(p.x,p.y-14,ally,p.atk));
           p.cooldown=180;  // ★ 90 → 180
           break;
         }
@@ -247,14 +247,14 @@ function loop(){
       if(e.role=="shaman" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
         if(inUnitRange(e,t)){
-          projectiles.push(new Projectile(e.x,e.y+18,t,e.atk,{shape:"arrow", color:"blue", size:12}));
+          projectiles.push(new Projectile(e.x,e.y+14,t,e.atk,{shape:"arrow", color:"blue", size:12}));
           e.cooldown=160;  // ★ 80 → 160
         }
       }
       if(e.role=="phantom" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
         if(inUnitRange(e,t)){
-          projectiles.push(new Projectile(e.x,e.y+18,t,e.atk,{color:"white", size:9}));
+          projectiles.push(new Projectile(e.x,e.y+14,t,e.atk,{color:"white", size:9}));
           e.cooldown=100;  // ★ 50 → 100
         }
       }
@@ -264,14 +264,14 @@ function loop(){
           const opts = (e.type === "giantGolem")
             ? {shape:"rock", color:"gray", size:21}
             : {shape:"square", color:"brown", size:12};
-          projectiles.push(new Projectile(e.x,e.y+18,t,e.atk,opts));
+          projectiles.push(new Projectile(e.x,e.y+14,t,e.atk,opts));
           e.cooldown=200;  // ★ 100 → 200
         }
       }
         if(e.role==="dragon" && e.cooldown<=0 && playerUnits.length>0){
           const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
           if(inUnitRange(e,t)){
-            projectiles.push(new Projectile(e.x,e.y+18,t,e.atk,{shape:"fireball", color:"orange", size:24}));
+            projectiles.push(new Projectile(e.x,e.y+14,t,e.atk,{shape:"fireball", color:"orange", size:24}));
             e.cooldown=150;
           }
         }
