@@ -163,7 +163,7 @@ class FloatingText{
   draw(){
     ctx.save();
     ctx.fillStyle=this.color;
-    ctx.font="32px sans-serif";
+    ctx.font="24px sans-serif";
     ctx.textAlign="center";
     ctx.globalAlpha = this.life/30;
     ctx.fillText(this.text,this.x,this.y);
