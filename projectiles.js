@@ -137,6 +137,52 @@ class SpecialCircle{
   }
 }
 
+class ExpandingEffectZone{
+  constructor(x,y,type,startRadius,endRadius,multiplier){
+    this.x=x; this.y=y; this.type=type;
+    this.radius=startRadius; this.endRadius=endRadius;
+    this.multiplier=multiplier; this.active = startRadius < endRadius;
+    this.affected=new Set();
+    this.apply();
+  }
+  apply(){
+    if(this.type==="freeze"){
+      const duration=5000*this.multiplier;
+      for(const e of enemyUnits){
+        if(!this.affected.has(e) && Math.hypot(e.x-this.x,e.y-this.y)<=this.radius){
+          e.speedBackup=e.speed; e.speed=0; this.affected.add(e);
+          setTimeout(()=>{
+            if(e.speedBackup!==undefined){ e.speed=e.speedBackup; delete e.speedBackup; }
+          },duration);
+        }
+      }
+    }else if(this.type==="meteor"){
+      for(const e of enemyUnits){
+        if(!this.affected.has(e) && Math.hypot(e.x-this.x,e.y-this.y)<=this.radius){
+          e.hp -= 200*this.multiplier;
+          floatingTexts.push(new FloatingText(e.x,e.y-15,`-${200*this.multiplier}`));
+          this.affected.add(e);
+        }
+      }
+    }else if(this.type==="heal"){
+      for(const p of playerUnits){
+        if(!this.affected.has(p) && Math.hypot(p.x-this.x,p.y-this.y)<=this.radius){
+          p.hp += 100*this.multiplier;
+          floatingTexts.push(new FloatingText(p.x,p.y-15,`+${100*this.multiplier}`,"green"));
+          this.affected.add(p);
+        }
+      }
+    }
+  }
+  update(){
+    if(!this.active) return;
+    this.radius = Math.min(this.radius + 8*gameSpeed, this.endRadius);
+    this.apply();
+    if(this.radius >= this.endRadius){ this.active=false; }
+  }
+  draw(){}
+}
+
 // 特殊攻撃の字幕表示
 class SpecialText{
   constructor(text){ this.text=text; this.life=60; this.active=true; }
