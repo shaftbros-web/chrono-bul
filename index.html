@@ -7,7 +7,6 @@
 <style>
   body { margin:0; background:#222; color:#eee; font-family:monospace; text-align:center; }
   #gameCanvas { background:#333; display:none; margin:0 auto; border:2px solid #000; image-rendering: pixelated; }
-  #faceCanvas { background:#111; display:block; margin:0 auto; }
   #gameArea { position:relative; width:400px; margin:0 auto; display:none; }
   #speedBtn { position:absolute; top:10px; right:10px; padding:4px 8px; }
   #menu, #settings, #help { margin-top:20px; }
@@ -136,8 +135,6 @@
   <button id="historyBtn" onclick="showChangelog()" style="margin-left:10px;">変更履歴</button>
 </h1>
 
-<canvas id="faceCanvas" width="800" height="220"></canvas>
-
 <div id="menu">
   <button onclick="startGame()">ゲーム開始</button>
   <button onclick="showSettings()">設定</button>
@@ -239,7 +236,6 @@
 
   
 <!-- スクリプト読み込み（順番に注意） -->
-<script src="faces.js" defer></script>
 <script src="units.js" defer></script>
 <script src="projectiles.js" defer></script>
 <script src="ui.js" defer></script>
