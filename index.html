@@ -74,15 +74,15 @@
     animation: manaBlink 1s linear infinite;
     filter: drop-shadow(0 0 2px gold);
   }
-  #freezeBar { accent-color: blue; }
-  #freezeBar::-webkit-progress-value { background: blue; }
-  #freezeBar::-moz-progress-bar { background: blue; }
-  #meteorBar { accent-color: red; }
-  #meteorBar::-webkit-progress-value { background: red; }
-  #meteorBar::-moz-progress-bar { background: red; }
-  #healBar { accent-color: green; }
-  #healBar::-webkit-progress-value { background: green; }
-  #healBar::-moz-progress-bar { background: green; }
+  #freezeBar1, #freezeBar2 { accent-color: blue; }
+  #freezeBar1::-webkit-progress-value, #freezeBar2::-webkit-progress-value { background: blue; }
+  #freezeBar1::-moz-progress-bar, #freezeBar2::-moz-progress-bar { background: blue; }
+  #meteorBar1, #meteorBar2 { accent-color: red; }
+  #meteorBar1::-webkit-progress-value, #meteorBar2::-webkit-progress-value { background: red; }
+  #meteorBar1::-moz-progress-bar, #meteorBar2::-moz-progress-bar { background: red; }
+  #healBar1, #healBar2 { accent-color: green; }
+  #healBar1::-webkit-progress-value, #healBar2::-webkit-progress-value { background: green; }
+  #healBar1::-moz-progress-bar, #healBar2::-moz-progress-bar { background: green; }
 
   /* 📱 スマホ表示で画面下部のスペシャルUIが見切れないように調整 */
   @media (max-width: 480px) {
@@ -174,17 +174,20 @@
 <div id="specialUI" style="display:none; position:relative; margin-top:10px; background:#111; padding:10px; border-top:2px solid #555;">
   <div>
     <label>❄️ フリーズ</label>
-    <progress id="freezeBar" value="0" max="100"></progress>
+    <progress id="freezeBar1" value="0" max="100"></progress>
+    <progress id="freezeBar2" value="0" max="100"></progress>
     <button id="freezeBtn" class="special-btn" onclick="useSpecial('freeze')" disabled>発動</button>
   </div>
   <div>
     <label>☄️ メテオ</label>
-    <progress id="meteorBar" value="0" max="150"></progress>
+    <progress id="meteorBar1" value="0" max="150"></progress>
+    <progress id="meteorBar2" value="0" max="150"></progress>
     <button id="meteorBtn" class="special-btn" onclick="useSpecial('meteor')" disabled>発動</button>
   </div>
   <div>
     <label>✨ ヒーリング</label>
-    <progress id="healBar" value="0" max="120"></progress>
+    <progress id="healBar1" value="0" max="120"></progress>
+    <progress id="healBar2" value="0" max="120"></progress>
     <button id="healBtn" class="special-btn" onclick="useSpecial('heal')" disabled>発動</button>
   </div>
 </div>

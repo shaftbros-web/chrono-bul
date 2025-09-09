@@ -164,17 +164,24 @@ function spawnEnemy(){
 }
 
 function updateManaUI(type){
-  const bar = document.getElementById(type + "Bar");
-  const btn = document.getElementById(type + "Btn");
-  if(!bar || !btn) return;
+  const bar1 = document.getElementById(type + "Bar1");
+  const bar2 = document.getElementById(type + "Bar2");
+  const btn  = document.getElementById(type + "Btn");
+  if(!bar1 || !bar2 || !btn) return;
 
-  bar.value = mana[type];
-
-  if(manaCharges[type] >= 2){
-    bar.classList.add("mana-full");
+  if(manaCharges[type] === 0){
+    bar1.value = mana[type];
+    bar2.value = 0;
+  } else if(manaCharges[type] === 1){
+    bar1.value = maxMana[type];
+    bar2.value = mana[type];
   } else {
-    bar.classList.remove("mana-full");
+    bar1.value = maxMana[type];
+    bar2.value = maxMana[type];
   }
+
+  bar1.classList.toggle("mana-full", manaCharges[type] >= 1);
+  bar2.classList.toggle("mana-full", manaCharges[type] >= 2);
 
   if(manaCharges[type] >= 1){
     btn.disabled = false;
