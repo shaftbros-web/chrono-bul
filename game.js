@@ -95,6 +95,7 @@ function toggleSpeed(){
 function startGame(){
   canvas = document.getElementById("gameCanvas");
   ctx = canvas.getContext("2d");
+  canvas.style.touchAction = "none";
 
   document.getElementById("menu").style.display="none";
   document.getElementById("settings").style.display="none";
@@ -124,10 +125,10 @@ function startGame(){
   if(enemySpawnTimer) clearInterval(enemySpawnTimer);
   enemySpawnTimer = setInterval(spawnEnemy, 4000);
 
-  canvas.onclick = (e)=>{
+  const handleFieldTap = (e)=>{
     const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+    const y = (e.clientY - rect.top) * (canvas.height / rect.height);
     if(pendingSpecial){
       triggerSpecial(pendingSpecial, x, y);
       const btn = document.getElementById(pendingSpecial + 'Btn');
@@ -144,6 +145,8 @@ function startGame(){
     updateGoldUI();
     pendingUnitType = null;
   };
+
+  canvas.onpointerdown = handleFieldTap;
 
   requestAnimationFrame(loop);
 }
