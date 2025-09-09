@@ -406,47 +406,14 @@ function triggerSpecial(type,x,y){
     }
   }
   const multiplier = 1 + progress; // 2周目はゲージ割合に応じて最大2倍まで上昇
-  const radius = 140 * multiplier;
+  const baseRadius = 140;
+  const radius = baseRadius * multiplier;
+  const colors = { freeze:"gray", meteor:"red", heal:"green" };
+  const texts  = { freeze:"❄️ フリーズ！！", meteor:"☄️ メテオ！！", heal:"✨ ヒーリング！！" };
 
-  if(type === "freeze"){
-    const affected=[];
-    for(const e of enemyUnits){
-      if(Math.hypot(e.x - x, e.y - y) <= radius){
-        e.speedBackup = e.speed;
-        e.speed = 0;
-        affected.push(e);
-      }
-    }
-    setTimeout(()=>{
-      for(const e of affected){
-        if(e.speedBackup !== undefined){ e.speed = e.speedBackup; delete e.speedBackup; }
-      }
-    },5000 * multiplier);
-    specialEffects.push(new SpecialCircle(x,y,"gray",radius));
-    specialEffects.push(new SpecialText("❄️ フリーズ！！"));
-  }
-
-  if(type === "meteor"){
-    for(const e of enemyUnits){
-      if(Math.hypot(e.x - x, e.y - y) <= radius){
-        e.hp -= 200 * multiplier;
-        floatingTexts.push(new FloatingText(e.x, e.y-15, `-${200 * multiplier}`));
-      }
-    }
-    specialEffects.push(new SpecialCircle(x,y,"red",radius));
-    specialEffects.push(new SpecialText("☄️ メテオ！！"));
-  }
-
-  if(type === "heal"){
-    for(const p of playerUnits){
-      if(Math.hypot(p.x - x, p.y - y) <= radius){
-        p.hp += 100 * multiplier;
-        floatingTexts.push(new FloatingText(p.x, p.y-15, `+${100 * multiplier}`, "green"));
-      }
-    }
-    specialEffects.push(new SpecialCircle(x,y,"green",radius));
-    specialEffects.push(new SpecialText("✨ ヒーリング！！"));
-  }
+  specialEffects.push(new ExpandingEffectZone(x,y,type,baseRadius,radius,multiplier));
+  specialEffects.push(new SpecialCircle(x,y,colors[type],radius));
+  specialEffects.push(new SpecialText(texts[type]));
 
   mana[type] = 0;
   manaCharges[type] = 0;
