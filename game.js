@@ -50,12 +50,13 @@ function inUnitRange(a,b){
 }
 
 // マナ変数の定義
-let mana = { freeze:0, meteor:0, heal:0 };
+let mana = { freeze:0, meteor:0, heal:0 };      // 1周目
+let mana2 = { freeze:0, meteor:0, heal:0 };      // 2周目
 let manaCharges = { freeze:0, meteor:0, heal:0 };
 const manaRegenRates = {
-  freeze: [0.167, 0.0835],
-  meteor: [0.0625, 0.03125],
-  heal: [0.1, 0.05]
+  freeze: [0.167, 0.0557],
+  meteor: [0.0625, 0.0208],
+  heal: [0.1, 0.0333]
 };
 const maxMana = { freeze:100, meteor:150, heal:120 };
 
@@ -117,6 +118,7 @@ function startGame(){
   playerUnits=[]; enemyUnits=[]; projectiles=[]; hitMarks=[]; swingMarks=[]; specialEffects=[]; floatingTexts=[];
   pendingSpecial = null;
   mana = { freeze:0, meteor:0, heal:0 };
+  mana2 = { freeze:0, meteor:0, heal:0 };
   manaCharges = { freeze:0, meteor:0, heal:0 };
   ["freeze","meteor","heal"].forEach(updateManaUI);
   playerGold = 500;
@@ -165,24 +167,23 @@ function spawnEnemy(){
 
 function updateManaUI(type){
   const bar = document.getElementById(type + "Bar");
+  const overlay = document.getElementById(type + "Overlay");
   const btn = document.getElementById(type + "Btn");
-  if(!bar || !btn) return;
+  if(!bar || !overlay || !btn) return;
 
   bar.value = mana[type];
-
-  if(manaCharges[type] >= 2){
-    bar.classList.add("mana-full");
-  } else {
-    bar.classList.remove("mana-full");
-  }
+  overlay.style.width = (mana2[type] / maxMana[type] * 100) + "%";
 
   if(manaCharges[type] >= 1){
+    bar.classList.add("mana-full");
     btn.disabled = false;
-    btn.textContent = `発動 ✕${manaCharges[type]}`;
+    btn.classList.add("ready");
   } else {
+    bar.classList.remove("mana-full");
     btn.disabled = true;
-    btn.textContent = "発動";
+    btn.classList.remove("ready");
   }
+  btn.textContent = "発動";
 }
 
 function updateGoldUI(){
@@ -339,12 +340,16 @@ function loop(){
   for(const type of ['freeze','meteor','heal']){
     if(manaCharges[type] < 2){
       const rate = manaRegenRates[type][manaCharges[type]];
-      mana[type] = Math.min(maxMana[type], mana[type] + rate * gameSpeed);
-      if(mana[type] >= maxMana[type]){
-        if(manaCharges[type] === 0){
-          mana[type] = 0;
+      if(manaCharges[type] === 0){
+        mana[type] = Math.min(maxMana[type], mana[type] + rate * gameSpeed);
+        if(mana[type] >= maxMana[type]){
+          mana[type] = maxMana[type];
           manaCharges[type] = 1;
-        }else{
+        }
+      }else{
+        mana2[type] = Math.min(maxMana[type], mana2[type] + rate * gameSpeed);
+        if(mana2[type] >= maxMana[type]){
+          mana2[type] = maxMana[type];
           manaCharges[type] = 2;
         }
       }
@@ -430,6 +435,7 @@ function triggerSpecial(type,x,y){
   }
 
   mana[type] = 0;
+  mana2[type] = 0;
   manaCharges[type] = 0;
   updateManaUI(type);
 }
