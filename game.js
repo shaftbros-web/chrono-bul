@@ -26,11 +26,11 @@ function inMeleeRange(a,b){
   const laneDiff = Math.abs(a.lane-b.lane);
   const dy = Math.abs(a.y-b.y);
   if(a.role==="dragon" || b.role==="dragon"){
-    if(laneDiff<=1) return dy<=48;
+    if(laneDiff<=1) return dy<=44;
     return false;
   }
-  if(laneDiff===0) return dy<=48;
-  if(laneDiff===1) return dy<=40;
+  if(laneDiff===0) return dy<=44;
+  if(laneDiff===1) return dy<=36;
   return false;
 }
 
@@ -302,14 +302,14 @@ function loop(){
     return e.y<canvas.height;
   });
   for(const e of enemyUnits){
-    if(e.y>=canvas.height-30){
+    if(e.y>=canvas.height-26){
       playerBaseHP-=e.atk;
       floatingTexts.push(new FloatingText(e.x, canvas.height-80, `-${e.atk}`));
       e.hp=0;
     }
   }
   for(const p of playerUnits){
-    if(p.y<=30){
+    if(p.y<=26){
       enemyBaseHP-=p.atk;
       floatingTexts.push(new FloatingText(p.x,80, `-${p.atk}`));
       playerGold += 150;
