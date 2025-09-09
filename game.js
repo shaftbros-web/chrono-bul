@@ -53,9 +53,9 @@ function inUnitRange(a,b){
 let mana = { freeze:0, meteor:0, heal:0 };
 let manaCharges = { freeze:0, meteor:0, heal:0 };
 const manaRegenRates = {
-  freeze: [0.167, 0.0835],
-  meteor: [0.0625, 0.03125],
-  heal: [0.1, 0.05]
+  freeze: [0.167, 0.0557],
+  meteor: [0.0625, 0.0208],
+  heal: [0.1, 0.0333]
 };
 const maxMana = { freeze:100, meteor:150, heal:120 };
 

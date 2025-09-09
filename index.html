@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chrono Bulward v0.2.34 (modular)</title>
+<title>Chrono Bulward v0.2.35 (modular)</title>
 <style>
   body { margin:0; background:#222; color:#eee; font-family:monospace; text-align:center; }
   #gameCanvas { background:#333; display:none; margin:0 auto; border:2px solid #000; }
@@ -88,6 +88,26 @@
   #healBar1::-webkit-progress-value, #healBar2::-webkit-progress-value { background: green; }
   #healBar1::-moz-progress-bar, #healBar2::-moz-progress-bar { background: green; }
 
+  .mana-bars {
+    position: relative;
+    display: inline-block;
+    width: 120px;
+    height: 16px;
+  }
+  .mana-bars progress {
+    width: 100%;
+    height: 100%;
+  }
+  .mana-bars .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    filter: brightness(0.7);
+  }
+  .mana-bars .base {
+    filter: brightness(1.4);
+  }
+
   /* 📱 スマホ表示で画面下部のスペシャルUIが見切れないように調整 */
   @media (max-width: 480px) {
     #gameArea { width: 100%; }
@@ -101,7 +121,7 @@
 </head>
 <body>
 <h1 id="title">
-  <span id="titleText">Chrono Bulward v0.2.34 (modular)</span>
+  <span id="titleText">Chrono Bulward v0.2.35 (modular)</span>
   <button id="historyBtn" onclick="showChangelog()" style="margin-left:10px;">変更履歴</button>
 </h1>
 
@@ -150,6 +170,7 @@
 <div id="changelog">
   <h2>変更履歴</h2>
     <ul>
+      <li>v0.2.35 二段目のマナ回復速度を1/3にし、スペシャルUIの演出を強化。</li>
       <li>v0.2.34 マナとUIの微調整。</li>
       <li>v0.2.33 ダメージと回復表示の文字サイズを調整。</li>
       <li>v0.2.32 ユニットと戦闘エフェクトの表示を拡大。</li>
@@ -179,20 +200,26 @@
 <div id="specialUI" style="display:none; position:relative; margin-top:10px; background:#111; padding:10px; border-top:2px solid #555;">
   <div>
     <label>❄️ フリーズ</label>
-    <progress id="freezeBar1" value="0" max="100"></progress>
-    <progress id="freezeBar2" value="0" max="100"></progress>
+    <span class="mana-bars">
+      <progress id="freezeBar1" class="base" value="0" max="100"></progress>
+      <progress id="freezeBar2" class="overlay" value="0" max="100"></progress>
+    </span>
     <button id="freezeBtn" class="special-btn" onclick="useSpecial('freeze')" disabled>発動</button>
   </div>
   <div>
     <label>☄️ メテオ</label>
-    <progress id="meteorBar1" value="0" max="150"></progress>
-    <progress id="meteorBar2" value="0" max="150"></progress>
+    <span class="mana-bars">
+      <progress id="meteorBar1" class="base" value="0" max="150"></progress>
+      <progress id="meteorBar2" class="overlay" value="0" max="150"></progress>
+    </span>
     <button id="meteorBtn" class="special-btn" onclick="useSpecial('meteor')" disabled>発動</button>
   </div>
   <div>
     <label>✨ ヒーリング</label>
-    <progress id="healBar1" value="0" max="120"></progress>
-    <progress id="healBar2" value="0" max="120"></progress>
+    <span class="mana-bars">
+      <progress id="healBar1" class="base" value="0" max="120"></progress>
+      <progress id="healBar2" class="overlay" value="0" max="120"></progress>
+    </span>
     <button id="healBtn" class="special-btn" onclick="useSpecial('heal')" disabled>発動</button>
   </div>
 </div>
