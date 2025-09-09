@@ -397,7 +397,15 @@ function useSpecial(type){
 }
 
 function triggerSpecial(type,x,y){
-  const multiplier = (manaCharges[type] === 2) ? 2 : 1;
+  let progress = 0;
+  if(manaCharges[type] >= 1){
+    if(manaCharges[type] === 1){
+      progress = mana[type] / maxMana[type];
+    } else {
+      progress = 1;
+    }
+  }
+  const multiplier = 1 + progress; // 2周目はゲージ割合に応じて最大2倍まで上昇
   const radius = 140 * multiplier;
 
   if(type === "freeze"){
