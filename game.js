@@ -203,7 +203,7 @@ function loop(){
           let dmg = (p.meleeAtk !== undefined) ? p.meleeAtk : p.atk;
           e.hp -= dmg;
           hitMarks.push(new HitMark(e.x,e.y));
-          floatingTexts.push(new FloatingText(e.x, e.y-20, `-${dmg}`));
+          floatingTexts.push(new FloatingText(e.x, e.y-15, `-${dmg}`));
           swingMarks.push(new SwingMark(p.x,p.y,"player"));
           p.cooldown=60;   // ★ 30 → 60
         }
@@ -211,19 +211,19 @@ function loop(){
           let dmg = (e.meleeAtk !== undefined) ? e.meleeAtk : e.atk;
           p.hp -= dmg;
           hitMarks.push(new HitMark(p.x,p.y));
-          floatingTexts.push(new FloatingText(p.x, p.y-20, `-${dmg}`));
+          floatingTexts.push(new FloatingText(p.x, p.y-15, `-${dmg}`));
           swingMarks.push(new SwingMark(e.x,e.y,"enemy"));
           e.cooldown=80;   // ★ 40 → 80
         }
       }else{
 
           if(p.role==="archer" && inUnitRange(p,e) && p.cooldown<=0){
-            projectiles.push(new Projectile(p.x,p.y-24,e,p.atk,{shape:"arrow", color:"white", size:16}));
+            projectiles.push(new Projectile(p.x,p.y-18,e,p.atk,{shape:"arrow", color:"white", size:12}));
             p.cooldown=120;  // ★ 60 → 120
           }
 
           if(p.role==="dragon" && inUnitRange(p,e) && p.cooldown<=0){
-            projectiles.push(new Projectile(p.x,p.y-24,e,p.atk,{shape:"fireball", color:"orange", size:32}));
+            projectiles.push(new Projectile(p.x,p.y-18,e,p.atk,{shape:"fireball", color:"orange", size:24}));
             p.cooldown=150;
           }
       }
@@ -231,7 +231,7 @@ function loop(){
     if(p.role==="healer" && p.cooldown<=0){
       for(const ally of playerUnits){
         if(ally!==p && ally.hp>0 && ally.hp<unitStats[ally.type].hp && inUnitRange(p,ally)){
-          projectiles.push(new HealProjectile(p.x,p.y-24,ally,p.atk));
+          projectiles.push(new HealProjectile(p.x,p.y-18,ally,p.atk));
           p.cooldown=180;  // ★ 90 → 180
           break;
         }
@@ -247,14 +247,14 @@ function loop(){
       if(e.role=="shaman" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
         if(inUnitRange(e,t)){
-          projectiles.push(new Projectile(e.x,e.y+24,t,e.atk,{shape:"arrow", color:"blue", size:16}));
+          projectiles.push(new Projectile(e.x,e.y+18,t,e.atk,{shape:"arrow", color:"blue", size:12}));
           e.cooldown=160;  // ★ 80 → 160
         }
       }
       if(e.role=="phantom" && e.cooldown<=0 && playerUnits.length>0){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
         if(inUnitRange(e,t)){
-          projectiles.push(new Projectile(e.x,e.y+24,t,e.atk,{color:"white", size:12}));
+          projectiles.push(new Projectile(e.x,e.y+18,t,e.atk,{color:"white", size:9}));
           e.cooldown=100;  // ★ 50 → 100
         }
       }
@@ -262,16 +262,16 @@ function loop(){
         const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
         if(inUnitRange(e,t)){
           const opts = (e.type === "giantGolem")
-            ? {shape:"rock", color:"gray", size:28}
-            : {shape:"square", color:"brown", size:16};
-          projectiles.push(new Projectile(e.x,e.y+24,t,e.atk,opts));
+            ? {shape:"rock", color:"gray", size:21}
+            : {shape:"square", color:"brown", size:12};
+          projectiles.push(new Projectile(e.x,e.y+18,t,e.atk,opts));
           e.cooldown=200;  // ★ 100 → 200
         }
       }
         if(e.role==="dragon" && e.cooldown<=0 && playerUnits.length>0){
           const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
           if(inUnitRange(e,t)){
-            projectiles.push(new Projectile(e.x,e.y+24,t,e.atk,{shape:"fireball", color:"orange", size:32}));
+            projectiles.push(new Projectile(e.x,e.y+18,t,e.atk,{shape:"fireball", color:"orange", size:24}));
             e.cooldown=150;
           }
         }
@@ -388,7 +388,7 @@ function triggerSpecial(type,x,y){
     for(const e of enemyUnits){
       if(Math.hypot(e.x - x, e.y - y) <= radius){
         e.hp -= 200;
-        floatingTexts.push(new FloatingText(e.x, e.y-20, `-200`));
+        floatingTexts.push(new FloatingText(e.x, e.y-15, `-200`));
       }
     }
     mana.meteor = 0;
@@ -401,7 +401,7 @@ function triggerSpecial(type,x,y){
     for(const p of playerUnits){
       if(Math.hypot(p.x - x, p.y - y) <= radius){
         p.hp += 100;
-        floatingTexts.push(new FloatingText(p.x, p.y-20, `+100`, "green"));
+        floatingTexts.push(new FloatingText(p.x, p.y-15, `+100`, "green"));
       }
     }
     mana.heal = 0;
