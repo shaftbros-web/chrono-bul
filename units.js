@@ -72,11 +72,11 @@ class Unit {
       hpBarY = this.y - height/2 - 15;
     }else{
       ctx.fillStyle=this.color;
-      ctx.beginPath(); ctx.arc(this.x,this.y,18,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(this.x,this.y,14,0,Math.PI*2); ctx.fill();
       ctx.fillStyle=(this.side==="player")?"white":"black";
       ctx.font="21px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
       ctx.fillText(this.label,this.x,this.y);
-      hpBarY = this.y - 30;
+      hpBarY = this.y - 26;
     }
 
     // ライフゲージ（左寄せ・最大HP比例）
