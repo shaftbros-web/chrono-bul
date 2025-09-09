@@ -81,7 +81,7 @@ const enemyBounties = {
   dragon: 500
 };
 
-const speedLevels = [1,1.5,2];
+const speedLevels = [0.8,1.2,1.6];
 let speedIndex = 0;
 let gameSpeed = speedLevels[speedIndex];
 
