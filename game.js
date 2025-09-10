@@ -20,6 +20,8 @@ let enemySpawnTimer = null;
 
 // レーン数
 const LANES = 5;
+// 城の高さ (上部の敵城、下部の自城)
+const CASTLE_HEIGHT = 40;
 
 // 近接判定
 function inMeleeRange(a,b){
@@ -141,7 +143,7 @@ function startGame(){
     const cost = unitCosts[pendingUnitType];
     if(playerGold < cost) return;
     const lane = Math.floor(x/(canvas.width/LANES));
-    playerUnits.push(new Unit(pendingUnitType,"player",lane,canvas.height-40));
+    playerUnits.push(new Unit(pendingUnitType,"player",lane,canvas.height-CASTLE_HEIGHT));
     playerGold -= cost;
     updateGoldUI();
     pendingUnitType = null;
@@ -155,7 +157,7 @@ function startGame(){
 function spawnEnemy(){
   if(singleSpawnType){ 
     // 単体モード：センターレーンに1体だけ出現
-    enemyUnits.push(new Unit(singleSpawnType,"enemy",2,40));
+    enemyUnits.push(new Unit(singleSpawnType,"enemy",2,CASTLE_HEIGHT));
     clearInterval(enemySpawnTimer); // 1体だけにするので以降停止
     return;
   }
@@ -164,7 +166,7 @@ function spawnEnemy(){
   const types=["goblin","orc","golem","shaman","phantom"];
   const type=types[Math.floor(Math.random()*types.length)];
   const lane=Math.floor(Math.random()*LANES);
-  enemyUnits.push(new Unit(type,"enemy",lane,40));
+  enemyUnits.push(new Unit(type,"enemy",lane,CASTLE_HEIGHT));
 }
 
 function updateManaUI(type){
@@ -213,16 +215,48 @@ function updateGoldUI(){
 function drawBackground(){
   const w = canvas.width;
   const h = canvas.height;
-  const sky = ctx.createLinearGradient(0,0,0,h*0.4);
-  sky.addColorStop(0,"#87CEEB");
-  sky.addColorStop(1,"#B0E0E6");
-  ctx.fillStyle = sky;
-  ctx.fillRect(0,0,w,h*0.4);
-  const ground = ctx.createLinearGradient(0,h*0.4,0,h);
-  ground.addColorStop(0,"#228B22");
-  ground.addColorStop(1,"#006400");
-  ctx.fillStyle = ground;
-  ctx.fillRect(0,h*0.4,w,h*0.6);
+
+  // 緑の草原
+  const grass = ctx.createLinearGradient(0,0,0,h);
+  grass.addColorStop(0,"#7cfc00");
+  grass.addColorStop(1,"#228B22");
+  ctx.fillStyle = grass;
+  ctx.fillRect(0,0,w,h);
+
+  // 敵の悪魔城 (上部)
+  ctx.fillStyle = "#2b2b2b";
+  ctx.fillRect(0,0,w,CASTLE_HEIGHT);
+  ctx.strokeStyle = "#550000";
+  for(let i=0;i<w;i+=20){
+    ctx.beginPath();
+    ctx.moveTo(i,0);
+    ctx.lineTo(i,CASTLE_HEIGHT);
+    ctx.stroke();
+  }
+  ctx.fillStyle = "#550000";
+  for(let i=0;i<w;i+=20){
+    ctx.beginPath();
+    ctx.moveTo(i,CASTLE_HEIGHT);
+    ctx.lineTo(i+10,CASTLE_HEIGHT-15);
+    ctx.lineTo(i+20,CASTLE_HEIGHT);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // 自陣の白亜城 (下部)
+  ctx.fillStyle = "#f5f5f5";
+  ctx.fillRect(0,h-CASTLE_HEIGHT,w,CASTLE_HEIGHT);
+  ctx.strokeStyle = "#cccccc";
+  for(let i=0;i<w;i+=20){
+    ctx.beginPath();
+    ctx.moveTo(i,h-CASTLE_HEIGHT);
+    ctx.lineTo(i,h);
+    ctx.stroke();
+  }
+  ctx.fillStyle = "#e0e0e0";
+  for(let i=0;i<w;i+=40){
+    ctx.fillRect(i,h-CASTLE_HEIGHT-10,20,10);
+  }
 }
 
 function loop(){
@@ -230,7 +264,11 @@ function loop(){
   drawBackground();
   ctx.strokeStyle="#555";
   for(let i=1;i<LANES;i++){
-    ctx.beginPath(); ctx.moveTo(i*canvas.width/LANES,0); ctx.lineTo(i*canvas.width/LANES,canvas.height); ctx.stroke();
+    const x = i*canvas.width/LANES;
+    ctx.beginPath();
+    ctx.moveTo(x,CASTLE_HEIGHT);
+    ctx.lineTo(x,canvas.height-CASTLE_HEIGHT);
+    ctx.stroke();
   }
   ctx.fillStyle="white";
   ctx.fillText(`自陣HP:${playerBaseHP}`,10,15);
