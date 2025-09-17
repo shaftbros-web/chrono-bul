@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chrono Bulward v0.2.35 (modular)</title>
 <style>
-  body { margin:0; background:#222; color:#eee; font-family:monospace; text-align:center; }
+  body { margin:0; background:#222; color:#eee; font-family:monospace; text-align:center; overflow:hidden; }
   #gameCanvas { background:#333; display:none; margin:0 auto; border:2px solid #000; image-rendering: pixelated; }
   #gameArea { position:relative; width:400px; margin:0 auto; display:none; }
   #speedBtn { position:absolute; top:10px; right:10px; padding:4px 8px; }
@@ -131,12 +131,12 @@
 </head>
 <body>
 <h1 id="title">
-  <span id="titleText">Chrono Bulward v0.2.35 (modular)</span>
+  <span id="titleText">Chrono Bulward v0.2.36 (modular)</span>
   <button id="historyBtn" onclick="showChangelog()" style="margin-left:10px;">変更履歴</button>
 </h1>
 
 <div id="menu">
-  <button onclick="startGame()">ゲーム開始</button>
+  <button onclick="startNormalGame()">ゲーム開始</button>
   <button onclick="showSettings()">設定</button>
   <button onclick="showHelp()">説明</button>
 </div>
@@ -180,6 +180,7 @@
 <div id="changelog">
   <h2>変更履歴</h2>
     <ul>
+      <li>v0.2.36 ユニットが敵陣に到達した際の仕様を変更（ゴールド獲得 → 能力アップ）。タイトル画面の表示不具合と、ゲーム開始後のスクロールを修正。</li>
       <li>v0.2.35 二段目のマナ回復速度を1/3にし、スペシャルUIの演出を強化。</li>
       <li>v0.2.34 マナとUIの微調整。</li>
       <li>v0.2.33 ダメージと回復表示の文字サイズを調整。</li>

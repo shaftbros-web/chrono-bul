@@ -1,5 +1,5 @@
 // ---- バージョン管理 ----
-const VERSION = "0.2.35";
+const VERSION = "0.2.36";
 const FULL_TITLE = `Chrono Bulward v${VERSION} (modular)`;
 document.title = FULL_TITLE;
 const titleEl = document.getElementById("titleText");
@@ -21,13 +21,19 @@ const unitConfig = {
   dragon:{name:"邪竜", props:{hp:[600,1500], atk:[30,100], speed:[0.05,0.2,0.01], range:[80,250]}}
 };
 
-// 単体モードの指定キャラ
-let singleSpawnType = null;
+// テストモード用のグローバル変数
+var testSpawnType = null;
+var isContinuousTest = false;
 
 const unitSlidersDiv = document.getElementById("unitSliders");
 if (unitSlidersDiv && typeof unitStats !== "undefined"){
   for (let key in unitConfig){
-    let html = `<div class="unit-settings"><h3 style="cursor:pointer;" onclick="startSingleMode('${key}')">${unitConfig[key].name}</h3>`;
+    let html = `<div class="unit-settings">
+      <h3>
+        ${unitConfig[key].name}
+        <button onclick="startTestMode('${key}', false)">単体</button>
+        <button onclick="startTestMode('${key}', true)">連続</button>
+      </h3>`;
     for (let prop in unitConfig[key].props){
       const [min,max,step=1] = unitConfig[key].props[prop];
       const val = unitStats[key][prop] ?? 0;
@@ -52,10 +58,18 @@ function applySettingsAndStart(){
   startGame();
 }
 
-// 単体モード開始
-function startSingleMode(type){
-  singleSpawnType = type;
-  console.log("単体モード開始:", type);
+// テストモード開始
+function startTestMode(type, isContinuous) {
+  testSpawnType = type;
+  isContinuousTest = isContinuous;
+  console.log("テストモード開始:", type, "連続:", isContinuous);
+  applySettingsAndStart();
+}
+
+// 通常モード開始 (テストモードをリセット)
+function startNormalGame() {
+  testSpawnType = null;
+  isContinuousTest = false;
   startGame();
 }
 
@@ -69,11 +83,11 @@ function backToMenuFromChangelog(){ document.getElementById("changelog").style.d
 
 // グローバル登録
 window.applySettingsAndStart = applySettingsAndStart;
-window.startSingleMode = startSingleMode;
+window.startTestMode = startTestMode;
+window.startNormalGame = startNormalGame;
 window.showSettings = showSettings;
 window.backToMenu = backToMenu;
 window.showHelp = showHelp;
 window.backToMenuFromHelp = backToMenuFromHelp;
 window.showChangelog = showChangelog;
 window.backToMenuFromChangelog = backToMenuFromChangelog;
-window.singleSpawnType = singleSpawnType;

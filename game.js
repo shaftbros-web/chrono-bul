@@ -155,10 +155,15 @@ function startGame(){
 }
 
 function spawnEnemy(){
-  if(singleSpawnType){ 
-    // 単体モード：センターレーンに1体だけ出現
-    enemyUnits.push(new Unit(singleSpawnType,"enemy",2,CASTLE_HEIGHT));
-    clearInterval(enemySpawnTimer); // 1体だけにするので以降停止
+  // testSpawnType と isContinuousTest は ui.js で定義されるグローバル変数
+  if(typeof testSpawnType !== 'undefined' && testSpawnType){
+    const lane = (typeof isContinuousTest !== 'undefined' && isContinuousTest) ? Math.floor(Math.random()*LANES) : 2;
+    enemyUnits.push(new Unit(testSpawnType, "enemy", lane, CASTLE_HEIGHT));
+
+    if(typeof isContinuousTest !== 'undefined' && !isContinuousTest){
+      clearInterval(enemySpawnTimer); // 単体モードの場合はタイマーを停止
+      enemySpawnTimer = null;
+    }
     return;
   }
 
@@ -276,87 +281,75 @@ function loop(){
 
   for(const u of [...playerUnits,...enemyUnits]){ u.update(); u.draw(); }
 
-  // === 自軍攻撃 ===
-  for(const p of playerUnits){
-    for(const e of enemyUnits){
-      if(inMeleeRange(p,e)){
-        p.target=e; e.target=p;
-        if(p.cooldown<=0){
-          let dmg = (p.meleeAtk !== undefined) ? p.meleeAtk : p.atk;
-          e.hp -= dmg;
-          hitMarks.push(new HitMark(e.x,e.y));
-          floatingTexts.push(new FloatingText(e.x, e.y-15, `-${dmg}`));
-          swingMarks.push(new SwingMark(p.x,p.y,"player"));
-          p.cooldown=60;   // ★ 30 → 60
-        }
-        if(e.cooldown<=0){
-          let dmg = (e.meleeAtk !== undefined) ? e.meleeAtk : e.atk;
-          p.hp -= dmg;
-          hitMarks.push(new HitMark(p.x,p.y));
-          floatingTexts.push(new FloatingText(p.x, p.y-15, `-${dmg}`));
-          swingMarks.push(new SwingMark(e.x,e.y,"enemy"));
-          e.cooldown=80;   // ★ 40 → 80
-        }
-      }else{
+  // === 攻撃ロジック ===
 
-          if(p.role==="archer" && inUnitRange(p,e) && p.cooldown<=0){
-            projectiles.push(new Projectile(p.x,p.y-14,e,p.atk,{shape:"arrow", color:"white", size:12}));
-            p.cooldown=120;  // ★ 60 → 120
-          }
-
-          if(p.role==="dragon" && inUnitRange(p,e) && p.cooldown<=0){
-            projectiles.push(new Projectile(p.x,p.y-14,e,p.atk,{shape:"fireball", color:"orange", size:24}));
-            p.cooldown=150;
-          }
-      }
+  // 1. 近接戦闘のターゲット設定
+  //    - 各ユニットは、近接範囲にいる敵をターゲットに設定する
+  for (const u of [...playerUnits, ...enemyUnits]) {
+    // ターゲットが既にいるか、範囲外・死亡ならリセット
+    if (u.target && (u.target.hp <= 0 || !inMeleeRange(u, u.target))) {
+      u.target = null;
     }
-    if(p.role==="healer" && p.cooldown<=0){
-      for(const ally of playerUnits){
-        if(ally!==p && ally.hp>0 && ally.hp<unitStats[ally.type].hp && inUnitRange(p,ally)){
-          projectiles.push(new HealProjectile(p.x,p.y-14,ally,p.atk));
-          p.cooldown=180;  // ★ 90 → 180
+    // 新しいターゲットを探す
+    if (!u.target) {
+      const enemies = (u.side === "player") ? enemyUnits : playerUnits;
+      for (const enemy of enemies) {
+        if (enemy.hp > 0 && inMeleeRange(u, enemy)) {
+          u.target = enemy;
+          if (!enemy.target) enemy.target = u; // 相手にも設定
           break;
         }
       }
     }
   }
 
-  // === 敵攻撃 ===
-  for(const e of enemyUnits){
-    if(e.target && e.target.hp>0){
-      // 戦闘中は移動・射撃なし
-    }else{
-      if(e.role=="shaman" && e.cooldown<=0 && playerUnits.length>0){
-        const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
-        if(inUnitRange(e,t)){
-          projectiles.push(new Projectile(e.x,e.y+14,t,e.atk,{shape:"arrow", color:"blue", size:12}));
-          e.cooldown=160;  // ★ 80 → 160
-        }
-      }
-      if(e.role=="phantom" && e.cooldown<=0 && playerUnits.length>0){
-        const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
-        if(inUnitRange(e,t)){
-          projectiles.push(new Projectile(e.x,e.y+14,t,e.atk,{color:"white", size:9}));
-          e.cooldown=100;  // ★ 50 → 100
-        }
-      }
-      if(e.role=="golem" && e.cooldown<=0 && playerUnits.length>0){
-        const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
-        if(inUnitRange(e,t)){
-          const opts = (e.type === "giantGolem")
-            ? {shape:"rock", color:"gray", size:21}
-            : {shape:"square", color:"brown", size:12};
-          projectiles.push(new Projectile(e.x,e.y+14,t,e.atk,opts));
-          e.cooldown=200;  // ★ 100 → 200
-        }
-      }
-        if(e.role==="dragon" && e.cooldown<=0 && playerUnits.length>0){
-          const t=playerUnits[Math.floor(Math.random()*playerUnits.length)];
-          if(inUnitRange(e,t)){
-            projectiles.push(new Projectile(e.x,e.y+14,t,e.atk,{shape:"fireball", color:"orange", size:24}));
-            e.cooldown=150;
+  // 2. 攻撃実行
+  //    - 全ユニットがクールダウン終わっていれば行動する
+  for (const u of [...playerUnits, ...enemyUnits]) {
+    if (u.cooldown > 0) continue;
+
+    // 2a. 近接攻撃 (ターゲットがいる場合)
+    if (u.target) {
+      const target = u.target;
+      let dmg = (u.meleeAtk !== undefined) ? u.meleeAtk : u.atk;
+      target.hp -= dmg;
+      hitMarks.push(new HitMark(target.x, target.y));
+      floatingTexts.push(new FloatingText(target.x, target.y - 15, `-${dmg}`));
+      swingMarks.push(new SwingMark(u.x, u.y, u.side));
+      u.cooldown = (u.side === "player") ? 15 : 80;
+    }
+    // 2b. 遠距離攻撃 & 回復 (近接中でない場合)
+    else {
+      const enemies = (u.side === "player") ? enemyUnits : playerUnits;
+      if (u.role === "archer" || u.role === "shaman" || u.role === "phantom" || u.role === "golem" || u.role === "dragon") {
+        if (enemies.length > 0) {
+          // 射程内の敵を探す
+          const target = enemies.find(e => e.hp > 0 && inUnitRange(u, e));
+          if (target) {
+            let options = {};
+            let yOffset = (u.side === 'player' ? -14 : 14);
+            if (u.role === "archer") {
+              options = {shape:"arrow", color:"white", size:12}; u.cooldown = 60;
+            } else if (u.role === "shaman") {
+              options = {shape:"arrow", color:"blue", size:12}; u.cooldown = 160;
+            } else if (u.role === "phantom") {
+              options = {color:"white", size:9}; u.cooldown = 100;
+            } else if (u.role === "golem") {
+              options = (u.type === "giantGolem") ? {shape:"rock", color:"gray", size:21} : {shape:"square", color:"brown", size:12};
+              u.cooldown = 200;
+            } else if (u.role === "dragon") {
+              options = {shape:"fireball", color:"orange", size:24}; u.cooldown = 150;
+            }
+            projectiles.push(new Projectile(u.x, u.y + yOffset, target, u.atk, options));
           }
         }
+      } else if (u.role === "healer") {
+        const allyToHeal = playerUnits.find(ally => ally !== u && ally.hp > 0 && ally.hp < unitStats[ally.type].hp && inUnitRange(u, ally));
+        if (allyToHeal) {
+          projectiles.push(new HealProjectile(u.x, u.y - 14, allyToHeal, u.atk));
+          u.cooldown = 45;
+        }
+      }
     }
   }
 
@@ -394,9 +387,17 @@ function loop(){
     if(p.y<=26){
       enemyBaseHP-=p.atk;
       floatingTexts.push(new FloatingText(p.x,80, `-${p.atk}`));
-      playerGold += 150;
-      updateGoldUI();
-      p.hp=0;
+      
+      // 報酬ゴールドを削除し、能力アップに変更
+      p.atk *= 1.05;
+      p.meleeAtk *= 1.05;
+      p.maxHp *= 1.05;
+      
+      p.y = canvas.height - CASTLE_HEIGHT;
+      p.hp = p.maxHp; // 新しい最大HPにリセット
+      
+      // 能力アップ表示
+      floatingTexts.push(new FloatingText(p.x, p.y - 40, "POWER UP!", "gold"));
     }
   }
   enemyUnits = enemyUnits.filter(e=>e.hp>0 && e.y<canvas.height);
@@ -481,6 +482,13 @@ function triggerSpecial(type,x,y){
 window.startGame = startGame;
 window.applySettingsAndStart = applySettingsAndStart;
 window.showSettings = showSettings;
+window.backToMenu = backToMenu;
+window.showHelp = showHelp;
+window.backToMenuFromHelp = backToMenuFromHelp;
+window.chooseUnit = chooseUnit;
+window.useSpecial = useSpecial;
+window.toggleSpeed = toggleSpeed;
+ow.showSettings = showSettings;
 window.backToMenu = backToMenu;
 window.showHelp = showHelp;
 window.backToMenuFromHelp = backToMenuFromHelp;

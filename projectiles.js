@@ -79,7 +79,7 @@ class HealProjectile{
     const dx=this.target.x-this.x, dy=this.target.y-this.y; 
     const d=Math.hypot(dx,dy); 
     if(d<7.5){ 
-      this.target.hp += this.amount; 
+      this.target.hp = Math.min(this.target.maxHp, this.target.hp + this.amount); 
       hitMarks.push(new HealMark(this.target.x,this.target.y)); 
       floatingTexts.push(new FloatingText(this.target.x, this.target.y-15, `+${this.amount}`, "green")); 
       this.active=false; 
@@ -168,7 +168,7 @@ class ExpandingEffectZone{
     }else if(this.type==="heal"){
       for(const p of playerUnits){
         if(!this.affected.has(p) && Math.hypot(p.x-this.x,p.y-this.y)<=this.radius){
-          p.hp += 100*this.multiplier;
+          p.hp = Math.min(p.maxHp, p.hp + (100 * this.multiplier));
           floatingTexts.push(new FloatingText(p.x,p.y-15,`+${100*this.multiplier}`,"green"));
           this.affected.add(p);
         }
